@@ -78,7 +78,7 @@
   /* Fix for mobile viewport sizing */
   @media screen and (max-width: 768px) {
     #root {
-      width: 100vw;
+      width: 150vw;
       min-height: 100vh;
       font-size: 130%;
     }
