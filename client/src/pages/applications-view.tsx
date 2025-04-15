@@ -233,7 +233,9 @@ export default function ApplicationsView({ id }: ApplicationsViewProps) {
                             <div>
                               <CardTitle>{getApplicantName(application.userId)}</CardTitle>
                               <CardDescription>
-                                Applied on {new Date(application.createdAt).toLocaleDateString()}
+                              {application.createdAt
+                                 ? `Applied on ${new Date(application.createdAt).toLocaleDateString()}`
+                                 : "Application date unknown"}
                               </CardDescription>
                             </div>
                             <Badge className="mt-2 sm:mt-0" variant="skill">
@@ -326,7 +328,9 @@ export default function ApplicationsView({ id }: ApplicationsViewProps) {
                             <div>
                               <CardTitle>{getApplicantName(application.userId)}</CardTitle>
                               <CardDescription>
-                                Applied on {new Date(application.createdAt).toLocaleDateString()}
+                              {application.createdAt
+                                ? `Applied on ${new Date(application.createdAt).toLocaleDateString()}`
+                                : "Application date unknown"}
                               </CardDescription>
                             </div>
                             <Badge className="mt-2 sm:mt-0" variant="technology">
@@ -365,7 +369,9 @@ export default function ApplicationsView({ id }: ApplicationsViewProps) {
                             <div>
                               <CardTitle>{getApplicantName(application.userId)}</CardTitle>
                               <CardDescription>
-                                Applied on {new Date(application.createdAt).toLocaleDateString()}
+                              {application.createdAt
+                                ? `Applied on ${new Date(application.createdAt).toLocaleDateString()}`
+                                : "Application date unknown"}
                               </CardDescription>
                             </div>
                             <Badge className="mt-2 sm:mt-0" variant="destructive">

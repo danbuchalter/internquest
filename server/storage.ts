@@ -127,7 +127,8 @@ export class MemStorage implements IStorage {
       phone: insertUser.phone ?? null,
       profilePicture: insertUser.profilePicture ?? null,
       location: insertUser.location ?? null,
-      bio: insertUser.bio ?? null
+      bio: insertUser.bio ?? null,
+      cvFile: insertUser.cvFile ?? null // Ensure `cvFile` is either string or null
     };
     this.users.set(id, user);
     return user;

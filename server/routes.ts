@@ -172,7 +172,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/applications", async (req, res) => {
     try {
-      if (!req.isAuthenticated() || req.user.role !== "student") {
+      if (!req.isAuthenticated() || req.user.role !== "intern") {
         return res.status(403).json({ message: "Unauthorized" });
       }
 
@@ -256,12 +256,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/saved-internships", async (req, res) => {
     try {
-      if (!req.isAuthenticated() || req.user.role !== "student") {
+      if (!req.isAuthenticated() || req.user.role !== "intern") {
         return res.status(403).json({ message: "Unauthorized" });
       }
 
-      const validatedData = insertSavedInternshipSchema.parse({});
+      const userId = req.user.id;
+      const { internshipId } = req.body;
+      
+      const validatedData = insertSavedInternshipSchema.parse({
+        userId,
+        internshipId
+      });
 
+      const existingSaved = await storage.getSavedInternshipByUserAndInternship(userId, internshipId);
+      
       if (existingSaved) {
         return res.status(400).json({ message: "Internship already saved" });
       }

@@ -147,6 +147,7 @@ export default function AuthPage() {
       password: "",
       role: "intern" as const,
       phone: "",
+      confirmPassword: "",
       location: "",
       bio: "",
       profilePicture: "",
@@ -421,7 +422,7 @@ export default function AuthPage() {
                           name="confirmPassword"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Confirm Password</FormLabel>
+                              <FormLabel>ConfirmPassword</FormLabel>
                               <FormControl>
                                 <Input type="password" placeholder="Confirm your password" {...field} />
                               </FormControl>
@@ -499,7 +500,7 @@ export default function AuthPage() {
                                     <svg className="h-6 w-6 text-green-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                     </svg>
-                                    <p className="text-green-800 font-bold text-lg">File selected: {field.value.name}</p>
+                                    <p className="text-green-800 font-bold text-lg">File selected: {(field.value as unknown as File).name}</p>
                                   </div>
                                 )}
                               </div>
@@ -533,7 +534,7 @@ export default function AuthPage() {
                                     <svg className="h-6 w-6 text-green-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                     </svg>
-                                    <p className="text-green-800 font-bold text-lg">File selected: {field.value.name}</p>
+                                    <p className="text-green-800 font-bold text-lg">File selected: {(field.value as unknown as File).name}</p>
                                   </div>
                                 )}
                               </div>

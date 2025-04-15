@@ -4,7 +4,7 @@ import {
   useMutation,
   UseMutationResult,
 } from "@tanstack/react-query";
-import { User as SelectUser, InsertUser, CompanyRegister, StudentRegister } from "@shared/schema";
+import { User as SelectUser, InsertUser, CompanyRegister, InternRegister } from "@shared/schema";
 import { getQueryFn, apiRequest, queryClient } from "../lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -14,7 +14,7 @@ type AuthContextType = {
   error: Error | null;
   loginMutation: UseMutationResult<SelectUser, Error, LoginData>;
   logoutMutation: UseMutationResult<void, Error, void>;
-  registerStudentMutation: UseMutationResult<SelectUser, Error, StudentRegister>;
+  registerStudentMutation: UseMutationResult<SelectUser, Error, InternRegister>;
   registerCompanyMutation: UseMutationResult<SelectUser, Error, CompanyRegister>;
 };
 
@@ -33,7 +33,8 @@ const mockUser: SelectUser = {
   phone: null,
   profilePicture: null,
   location: "Cape Town",
-  bio: "This is a mock user for development purposes"
+  bio: "This is a mock user for development purposes",
+  cvFile: null // ✅ Add this line
 };
 
 // For development, we're using a mock implementation
@@ -69,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     const registerStudentMutation = useMutation({
-      mutationFn: async (_data: StudentRegister) => {
+      mutationFn: async (_data: InternRegister) => {
         setMockIsLoading(true);
         await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API delay
         setMockIsLoading(false);
@@ -182,7 +183,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
 
   const registerStudentMutation = useMutation({
-    mutationFn: async (data: StudentRegister) => {
+    mutationFn: async (data: InternRegister) => {
       const res = await apiRequest("POST", "/api/register/student", data);
       return await res.json();
     },
