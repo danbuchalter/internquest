@@ -16,8 +16,6 @@ import {
   BookmarkPlus,
   BookmarkMinus, 
   Building, 
-  FileText, 
-  Award, 
   CheckCircle2, 
   XCircle,
   Loader2,
@@ -41,7 +39,6 @@ import {
   FormLabel, 
   FormMessage 
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { 
   Dialog, 
@@ -49,9 +46,7 @@ import {
   DialogDescription, 
   DialogFooter, 
   DialogHeader, 
-  DialogTitle, 
-  DialogTrigger 
-} from "@/components/ui/dialog";
+  DialogTitle} from "@/components/ui/dialog";
 
 interface InternshipDetailProps {
   id: string;
@@ -76,12 +71,12 @@ export default function InternshipDetail({ id }: InternshipDetailProps) {
   
   const { data: savedInternships, isLoading: savedLoading } = useQuery<any[]>({
     queryKey: [`/api/saved-internships/user/${user?.id}`],
-    enabled: !!user?.id && user.role === "student",
+    enabled: !!user?.id && user.role === "intern",
   });
   
   const { data: existingApplication, isLoading: applicationLoading } = useQuery<Application[]>({
     queryKey: [`/api/applications/user/${user?.id}`],
-    enabled: !!user?.id && user.role === "student",
+    enabled: !!user?.id && user.role === "intern",
   });
   
   // Check if the internship is already saved
@@ -193,7 +188,7 @@ export default function InternshipDetail({ id }: InternshipDetailProps) {
       return;
     }
     
-    if (user.role !== "student") {
+    if (user.role !== "intern") {
       toast({
         title: "Not available",
         description: "Only students can save internships.",
@@ -220,7 +215,7 @@ export default function InternshipDetail({ id }: InternshipDetailProps) {
       return;
     }
     
-    if (user.role !== "student") {
+    if (user.role !== "intern") {
       toast({
         title: "Not available",
         description: "Only students can apply for internships.",
@@ -240,7 +235,7 @@ export default function InternshipDetail({ id }: InternshipDetailProps) {
     setApplicationDialogOpen(true);
   };
   
-  const isLoading = internshipLoading || (user?.role === "student" && (savedLoading || applicationLoading));
+  const isLoading = internshipLoading || (user?.role === "intern" && (savedLoading || applicationLoading));
   
   if (isLoading) {
     return (
@@ -291,7 +286,7 @@ export default function InternshipDetail({ id }: InternshipDetailProps) {
           </div>
           
           <div className="mt-4 md:mt-0 flex space-x-2">
-            {user?.role === "student" && (
+            {user?.role === "intern" && (
               <Button
                 variant="outline"
                 onClick={handleSaveToggle}
@@ -311,7 +306,7 @@ export default function InternshipDetail({ id }: InternshipDetailProps) {
               </Button>
             )}
             
-            {user?.role === "student" && (
+            {user?.role === "intern" && (
               hasApplied ? (
                 <Button disabled variant={applicationStatus === "accepted" ? "default" : "outline"}>
                   {applicationStatus === "pending" ? (
@@ -456,7 +451,7 @@ export default function InternshipDetail({ id }: InternshipDetailProps) {
             </CardContent>
           </Card>
           
-          {user?.role === "student" && !hasApplied && (
+          {user?.role === "intern" && !hasApplied && (
             <Card className="bg-primary/5 border-primary/20">
               <CardHeader>
                 <CardTitle>Ready to Apply?</CardTitle>
