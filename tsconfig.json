@@ -5,7 +5,7 @@
     "incremental": true,
     "tsBuildInfoFile": "./.tsbuildinfo",
     "noEmit": true,
-    "module": "commonjs", // Change this to commonjs
+    "module": "esnext", // Change this to commonjs
     "strict": true,
     "lib": ["esnext", "dom", "dom.iterable"],
     "jsx": "preserve",
