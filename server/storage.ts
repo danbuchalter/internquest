@@ -390,7 +390,7 @@ export class MemStorage implements IStorage {
       password: "$2a$10$XJrO5Tt0U1kYYDiSZtL7QeisTTtF7pRnD4mL7Qz7GD.uAQOzRFWh2", // "password" - Hashed
       email: "student@example.com",
       name: "Demo Student",
-      role: "student",
+      role: "intern",
       location: "Cape Town",
       bio: "Computer Science student looking for internship opportunities"
     });
