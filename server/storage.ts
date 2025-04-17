@@ -21,6 +21,7 @@ import { eq, and, sql } from "drizzle-orm";
 import connectPg from "connect-pg-simple";
 import { db } from "./db";
 import { Pool } from "@neondatabase/serverless";
+import { date } from "drizzle-orm/mysql-core";
 
 const MemoryStore = createMemoryStore(session);
 const PostgresStore = connectPg(session);
@@ -70,7 +71,7 @@ export class MemStorage implements IStorage {
   private companies: Map<number, Company>;
   private internships: Map<number, Internship>;
   private applications: Map<number, Application>;
-  private savedInternships: Map<number, SavedInternship>;
+  private savedInternships: Map<number, { id: number; userId: number; internshipId: number; savedAt: Date | null}>;
   
   private userIdCounter: number;
   private companyIdCounter: number;
@@ -400,6 +401,8 @@ export class MemStorage implements IStorage {
 export class DatabaseStorage implements IStorage {
   sessionStore: SessionStore;
   private pool: Pool;
+  SavedInternship: any;
+  savedInternshipIdCounter: any;
 
   constructor() {
     // Initialize session store and create a pool to be used for db connections
@@ -560,13 +563,20 @@ export class DatabaseStorage implements IStorage {
     return result[0];
   }
   
-  async createSavedInternship(savedInternship: InsertSavedInternship): Promise<SavedInternship> {
-    const now = new Date();
-    const result = await db.insert(savedInternships).values({
-      ...savedInternship,
+  async createSavedInternship(_insertsavedInternship: {userId: number; InternshipId: number; }): Promise<SavedInternship> {
+    const id = this.savedInternshipIdCounter++; 
+    const now = new Date ();
+
+    //Ensure insertSavedInternship includes userId and internshipId
+    const savedInternship: SavedInternship = {
+      ..._insertsavedInternship,
+      id,
       savedAt: now
-    }).returning();
-    return result[0];
+    };
+
+    this. SavedInternship.set(id, savedInternship);
+    return savedInternship;
+    
   }
   
   async deleteSavedInternship(userId: number, internshipId: number): Promise<void> {
