@@ -7,7 +7,7 @@ import {
   InsertInternship, 
   Application, 
   InsertApplication, 
-  SavedInternship, 
+  SavedInternship,
   InsertSavedInternship,
   users,
   companies,
@@ -25,6 +25,20 @@ import { date } from "drizzle-orm/mysql-core";
 
 const MemoryStore = createMemoryStore(session);
 const PostgresStore = connectPg(session);
+
+// 1. Define the SavedInternship interface (data structure)
+export interface LocalSavedInternship {
+  id: number;             // Unique ID for the saved internship
+  userId: number;         // ID of the user who saved the internship
+  internshipId: number;   // ID of the internship that is saved
+  savedAt: Date | null;    // Timestamp for when the internship was saved
+}
+// 2. Define the InsertSavedInternship interface (for creating new saved internships)
+export interface LocalInsertSavedInternship {
+  userId: number;
+  internshipId: number;
+  savedAt: Date;  // The time when the internship was saved
+}
 
 // Type for session store
 type SessionStore = session.Store;
@@ -47,6 +61,8 @@ export interface IStorage {
   getAllInternships(): Promise<Internship[]>;
   getInternshipsByCompany(companyId: number): Promise<Internship[]>;
   createInternship(internship: InsertInternship): Promise<Internship>;
+  
+  
   
   // Application methods
   getApplication(id: number): Promise<Application | undefined>;
@@ -80,6 +96,7 @@ export class MemStorage implements IStorage {
   private savedInternshipIdCounter: number;
   
   sessionStore: SessionStore;
+  savedInternship: any;
 
   constructor() {
     this.users = new Map();
@@ -256,16 +273,19 @@ export class MemStorage implements IStorage {
     );
   }
   
-  async createSavedInternship(insertSavedInternship: InsertSavedInternship): Promise<SavedInternship> {
-    const id = this.savedInternshipIdCounter++;
-    const now = new Date();
-    const savedInternship: SavedInternship = { 
-      ...insertSavedInternship, 
-      id, 
-      savedAt: now 
+  async createSavedInternship(data: { userId: number; internshipId: number }): Promise<SavedInternship> {
+    const { userId, internshipId } = data;
+    
+    const newSavedInternship: SavedInternship = {
+      id: this.savedInternshipIdCounter++,
+      userId,
+      internshipId,
+      savedAt: new Date(),
     };
-    this.savedInternships.set(id, savedInternship);
-    return savedInternship;
+    
+    
+    this.savedInternship.push(newSavedInternship);
+    return newSavedInternship;
   }
   
   async deleteSavedInternship(userId: number, internshipId: number): Promise<void> {
@@ -526,7 +546,7 @@ export class DatabaseStorage implements IStorage {
     // Ensure all required fields have values to avoid undefined
     const insertData = {
       ...application,
-      status: "pending",
+      status: "pending" as "pending",
       createdAt: now,
       coverLetter: application.coverLetter ?? null
     };
@@ -563,7 +583,7 @@ export class DatabaseStorage implements IStorage {
     return result[0];
   }
   
-  async createSavedInternship(_insertsavedInternship: {userId: number; InternshipId: number; }): Promise<SavedInternship> {
+  async createSavedInternship(_insertsavedInternship: {userId: number; internshipId: number; }): Promise<SavedInternship> {
     const id = this.savedInternshipIdCounter++; 
     const now = new Date ();
 
@@ -571,7 +591,8 @@ export class DatabaseStorage implements IStorage {
     const savedInternship: SavedInternship = {
       ..._insertsavedInternship,
       id,
-      savedAt: now
+      savedAt: now,
+      internshipId: 0
     };
 
     this. SavedInternship.set(id, savedInternship);

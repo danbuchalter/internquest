@@ -63,6 +63,8 @@ export const applications = pgTable("applications", {
 // Saved internships
 export const savedInternships = pgTable("saved_internships", {
   id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  internshipId: integer("internship_id").notNull().references(() => internships.id),
   savedAt: timestamp("saved_at").defaultNow(),
 });
 
