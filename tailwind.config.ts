@@ -7,6 +7,7 @@ const require = createRequire(import.meta.url);
 export default {
   darkMode: ["class"],
   content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
+  safelist: ["border-border"],
   theme: {
     extend: {
       borderRadius: {
