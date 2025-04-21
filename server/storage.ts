@@ -23,6 +23,7 @@ import { db } from "./db";
 import { Pool } from "@neondatabase/serverless";
 import { date } from "drizzle-orm/mysql-core";
 
+// Session store setup for Memory and Postgres
 const MemoryStore = createMemoryStore(session);
 const PostgresStore = connectPg(session);
 
