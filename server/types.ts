@@ -1,5 +1,9 @@
 // types.ts
 
+// Import necessary types
+import { JWTPayload } from "jose"; // If you're using 'jose' for JWT
+
+
 export interface User {
     id: number;
     fullName: string;
@@ -91,3 +95,12 @@ export interface User {
     createSavedInternship(data: { userId: number; internshipId: number }): Promise<SavedInternship>;
     deleteSavedInternship(userId: number, internshipId: number): Promise<void>;
   }
+
+  // Global type augmentation for Express.Request
+declare global {
+  namespace Express {
+    interface Request {
+      user?: JWTPayload & { role: string }; // Customize the user object with a role property
+    }
+  }
+}
