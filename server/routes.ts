@@ -1,26 +1,67 @@
+// routes.ts
+
+import { Request } from "express";
+import { JWTPayload } from "jose";
+
+interface AuthUser extends JWTPayload {
+  id: number;
+  role: string;
+}
+
+type AuthRequest = Request<any, any, any, any> & {
+  user?: AuthUser;
+};
+
+// ... your routes using AuthRequest ...
+
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { setupAuth } from "./auth";
 import { storage } from "./storage";
-import { 
-  insertInternshipSchema, 
-  insertApplicationSchema, 
+import {
+  insertInternshipSchema,
+  insertApplicationSchema,
   insertSavedInternshipSchema,
   applicationStatusEnum
 } from "@shared/schema";
 import { z } from "zod";
+import { jwtVerify } from "jose"; // Add the JWT verification library
+
+const SUPABASE_JWT_SECRET = process.env.SUPABASE_JWT_SECRET!;
+
+// Middleware to verify JWT token from Supabase
+async function verifyToken(req: any, res: any, next: any) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const { payload } = await jwtVerify(token, new TextEncoder().encode(SUPABASE_JWT_SECRET));
+    req.user = {
+      id: payload.sub,
+      email: payload.email,
+      role: payload.role || "intern", // Adjust according to how roles are stored
+    };
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: "Invalid token" });
+  }
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Add a basic endpoint for checking server status
   app.get("/ping", (req, res) => {
     res.status(200).send("pong");
   });
-  
+
   // Add a basic health check endpoint
   app.get("/api/health", (req, res) => {
     res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
   });
-  
+
   // Setup authentication routes
   setupAuth(app);
 
@@ -29,11 +70,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const companyId = parseInt(req.params.id);
       const company = await storage.getCompany(companyId);
-      
+
       if (!company) {
         return res.status(404).json({ message: "Company not found" });
       }
-      
+
       res.json(company);
     } catch (error) {
       res.status(500).json({ message: "Server error", error });
@@ -44,11 +85,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = parseInt(req.params.userId);
       const company = await storage.getCompanyByUserId(userId);
-      
+
       if (!company) {
         return res.status(404).json({ message: "Company not found" });
       }
-      
+
       res.json(company);
     } catch (error) {
       res.status(500).json({ message: "Server error", error });
@@ -60,27 +101,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { industry, location, duration } = req.query;
       const internships = await storage.getAllInternships();
-      
+
       let filteredInternships = internships;
-      
+
       if (industry && typeof industry === 'string') {
         filteredInternships = filteredInternships.filter(
           internship => internship.industry.toLowerCase() === industry.toLowerCase()
         );
       }
-      
+
       if (location && typeof location === 'string') {
         filteredInternships = filteredInternships.filter(
           internship => internship.location.toLowerCase().includes(location.toLowerCase())
         );
       }
-      
+
       if (duration && typeof duration === 'string') {
         filteredInternships = filteredInternships.filter(
           internship => internship.duration.toLowerCase() === duration.toLowerCase()
         );
       }
-      
+
       res.json(filteredInternships);
     } catch (error) {
       res.status(500).json({ message: "Server error", error });
@@ -91,11 +132,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const internshipId = parseInt(req.params.id);
       const internship = await storage.getInternship(internshipId);
-      
+
       if (!internship) {
         return res.status(404).json({ message: "Internship not found" });
       }
-      
+
       res.json(internship);
     } catch (error) {
       res.status(500).json({ message: "Server error", error });
@@ -112,12 +153,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/internships", async (req, res) => {
+  app.post("/api/internships", verifyToken, async (req, res) => {
     try {
-      if (!req.isAuthenticated() || req.user.role !== "company") {
-        return res.status(403).json({ message: "Unauthorized" });
-      }
+      // Check if req.user is defined
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
 
+     // Check if the user is a company
+     if (req.user.role !== "company") {
+      return res.status(403).json({ message: "Forbidden: You must be a company to create internships" });
+    }
+      
+      
       const validatedData = insertInternshipSchema.parse(req.body);
       const internship = await storage.createInternship(validatedData);
       res.status(201).json(internship);
@@ -130,12 +178,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Application routes
-  app.get("/api/applications/user/:userId", async (req, res) => {
+  app.get("/api/applications/user/:userId", verifyToken, async (req, res) => {
     try {
-      if (!req.isAuthenticated() || parseInt(req.params.userId) !== req.user.id) {
+      if (!req.user || parseInt(req.params.userId) !== req.user.id) {
         return res.status(403).json({ message: "Unauthorized" });
       }
-
+  
       const userId = parseInt(req.params.userId);
       const applications = await storage.getApplicationsByUser(userId);
       res.json(applications);
@@ -144,21 +192,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/applications/internship/:internshipId", async (req, res) => {
+  app.get("/api/applications/internship/:internshipId", verifyToken, async (req, res) => {
     try {
-      if (!req.isAuthenticated() || req.user.role !== "company") {
+      if (!req.user || req.user.role !== "company") {
         return res.status(403).json({ message: "Unauthorized" });
       }
 
       const internshipId = parseInt(req.params.internshipId);
       const internship = await storage.getInternship(internshipId);
-      
+
       if (!internship) {
         return res.status(404).json({ message: "Internship not found" });
       }
 
-      const company = await storage.getCompanyByUserId(req.user.id);
-      
+      const userId = (req.user as { id: number; role: string }).id;
+      const company = await storage.getCompanyByUserId(userId);
+
       if (!company || internship.companyId !== company.id) {
         return res.status(403).json({ message: "You don't have permission to view these applications" });
       }
@@ -170,18 +219,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/applications", async (req, res) => {
+  app.post("/api/applications", verifyToken, async (req, res) => {
     try {
-      if (!req.isAuthenticated() || req.user.role !== "intern") {
+      if (!req.user || req.user.role !== "intern") {
         return res.status(403).json({ message: "Unauthorized" });
       }
+      
+      const { id: userId } = req.user as { id: number; role: string };
 
       const validatedData = insertApplicationSchema.parse({
         ...req.body,
         userId: req.user.id
       });
 
-      // Check if user has already applied for this internship
       const existingApplication = await storage.getApplicationByUserAndInternship(
         validatedData.userId,
         validatedData.internshipId
@@ -201,35 +251,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/applications/:id/status", async (req, res) => {
+  app.patch("/api/applications/:id/status", verifyToken, async (req, res) => {
     try {
-      if (!req.isAuthenticated() || req.user.role !== "company") {
-        return res.status(403).json({ message: "Unauthorized" });
-      }
+      if (!req.user || req.user.role !== "company") {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
 
-      const applicationId = parseInt(req.params.id);
-      const { status } = req.body;
+    const { id: userId } = req.user as { id: number; role: string };
+
+    const applicationId = parseInt(req.params.id);
+    const { status } = req.body;
 
       if (!applicationStatusEnum.enumValues.includes(status)) {
         return res.status(400).json({ message: "Invalid status" });
       }
 
       const application = await storage.getApplication(applicationId);
-      
+
       if (!application) {
         return res.status(404).json({ message: "Application not found" });
       }
 
       const internship = await storage.getInternship(application.internshipId);
-      
-      if (!internship) {
-        return res.status(404).json({ message: "Internship not found" });
-      }
 
-      const company = await storage.getCompanyByUserId(req.user.id);
-      
-      if (!company || internship.companyId !== company.id) {
-        return res.status(403).json({ message: "You don't have permission to update this application" });
+      if (!internship || internship.companyId !== req.user.id) {
+        return res.status(403).json({ message: "You do not have permission to update this application" });
       }
 
       const updatedApplication = await storage.updateApplicationStatus(applicationId, status);
@@ -239,13 +285,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Saved internships routes
-  app.get("/api/saved-internships/user/:userId", async (req, res) => {
+  // Saved Internship routes
+  app.get("/api/saved-internships/user/:userId", verifyToken, async (req, res) => {
     try {
-      if (!req.isAuthenticated() || parseInt(req.params.userId) !== req.user.id) {
+      if (!req.user) {
         return res.status(403).json({ message: "Unauthorized" });
       }
 
+      const { id: userIdFromToken } = req.user as { id: number; role: string };
+      
       const userId = parseInt(req.params.userId);
       const savedInternships = await storage.getSavedInternshipsByUser(userId);
       res.json(savedInternships);
@@ -254,26 +302,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/saved-internships", async (req, res) => {
+  app.post("/api/saved-internships", verifyToken, async (req, res) => {
     try {
-      if (!req.isAuthenticated() || req.user.role !== "intern") {
+      if (!req.user) {
         return res.status(403).json({ message: "Unauthorized" });
       }
-
-      const userId = req.user.id;
-      const { internshipId } = req.body;
-      
+  
       const validatedData = insertSavedInternshipSchema.parse({
-        userId,
-        internshipId
+        ...req.body,
+        userId: req.user.id,
       });
-
-      const existingSaved = await storage.getSavedInternshipByUserAndInternship(userId, internshipId);
-      
-      if (existingSaved) {
-        return res.status(400).json({ message: "Internship already saved" });
-      }
-
+  
       const savedInternship = await storage.createSavedInternship(validatedData);
       res.status(201).json(savedInternship);
     } catch (error) {
@@ -284,24 +323,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/saved-internships/:internshipId", async (req, res) => {
-    try {
-      if (!req.isAuthenticated()) {
-        return res.status(403).json({ message: "Unauthorized" });
-      }
-
-      const userId = req.user.id;
-      const internshipId = parseInt(req.params.internshipId);
-
-      await storage.deleteSavedInternship(userId, internshipId);
-      res.status(204).send();
-    } catch (error) {
-      res.status(500).json({ message: "Server error", error });
-    }
-  });
-
-  // Create HTTP server
-  const httpServer = createServer(app);
-
-  return httpServer;
+  const server = createServer(app);
+  return server;
 }
