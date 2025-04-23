@@ -1,14 +1,14 @@
 import type { Config } from "tailwindcss";
-
-// Add this so TypeScript knows what `require` is
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 
-export default {
+const config: Config = {
   darkMode: ["class"],
   content: [
-    "./index.html", // Make sure the root HTML is referenced correctly
-    "./src/**/*.{js,jsx,ts,tsx}", // Adjusted to cover the correct files in the src folder
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
+    "./pages/**/*.{js,ts,jsx,tsx}",
   ],
   safelist: ["border-[hsl(var(--border))]"],
   theme: {
@@ -72,20 +72,12 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
         },
       },
       animation: {
@@ -94,5 +86,10 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
-} satisfies Config;
+  plugins: [
+    require("tailwindcss-animate"),
+    require("@tailwindcss/typography"),
+  ],
+};
+
+export default config;
