@@ -4,7 +4,7 @@ import {
   User, Company, Internship, Application, SavedInternship,
   InsertUser, InsertCompany, InsertInternship, InsertApplication,
   IStorage
-} from './types'; // Adjust path as needed
+} from './types'; // correct relative path
 
 const SUPABASE_URL = 'https://dxrtrrnoigstzfpinjlk.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // Keep secret in .env ideally
