@@ -1,5 +1,5 @@
 // routes.ts
-
+import { supabaseStorage } from './storage'; // Adjust the path as needed
 import { Request } from "express";
 import { JWTPayload } from "jose";
 
@@ -17,7 +17,7 @@ type AuthRequest = Request<any, any, any, any> & {
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { setupAuth } from "./auth";
-import { storage } from "./storage";
+
 import {
   insertInternshipSchema,
   insertApplicationSchema,
@@ -52,9 +52,22 @@ async function verifyToken(req: any, res: any, next: any) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Add a basic endpoint for checking server status
-  app.get("/ping", (req, res) => {
-    res.status(200).send("pong");
+  // Other routes (ping, health, etc.)
+
+  // Internships route
+  app.get("/api/internships", async (req, res) => {
+    try {
+      const { page = 1, pageSize = 10 } = req.query;
+      console.log('Request Params:', { page, pageSize }); // Log the request parameters
+
+      const internships = await supabaseStorage.getAllInternships(Number(page), Number(pageSize));
+      console.log('Internships:', internships); // Log the fetched internships
+
+      res.json(internships);
+    } catch (error) {
+      console.error('Error:', error); // Log the error to get more context
+      res.status(500).json({ message: 'Server error', error });
+    }
   });
 
   // Add a basic health check endpoint
@@ -69,7 +82,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/companies/:id", async (req, res) => {
     try {
       const companyId = parseInt(req.params.id);
-      const company = await storage.getCompany(companyId);
+      const company = await supabaseStorage.getCompany(companyId);
 
       if (!company) {
         return res.status(404).json({ message: "Company not found" });
@@ -84,7 +97,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/companies/user/:userId", async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
-      const company = await storage.getCompanyByUserId(userId);
+      const company = await supabaseStorage.getCompanyByUserId(userId);
 
       if (!company) {
         return res.status(404).json({ message: "Company not found" });
@@ -100,28 +113,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/internships", async (req, res) => {
     try {
       const { industry, location, duration } = req.query;
-      const internships = await storage.getAllInternships();
-
+  
+      // Extract pagination from query or use defaults
+      const page = parseInt(req.query.page as string) || 1;
+      const pageSize = parseInt(req.query.pageSize as string) || 10;
+  
+      const internships = await supabaseStorage.getAllInternships(page, pageSize);
+  
       let filteredInternships = internships;
-
+  
       if (industry && typeof industry === 'string') {
         filteredInternships = filteredInternships.filter(
           internship => internship.industry.toLowerCase() === industry.toLowerCase()
         );
       }
-
+  
       if (location && typeof location === 'string') {
         filteredInternships = filteredInternships.filter(
           internship => internship.location.toLowerCase().includes(location.toLowerCase())
         );
       }
-
+  
       if (duration && typeof duration === 'string') {
         filteredInternships = filteredInternships.filter(
           internship => internship.duration.toLowerCase() === duration.toLowerCase()
         );
       }
-
+  
       res.json(filteredInternships);
     } catch (error) {
       res.status(500).json({ message: "Server error", error });
@@ -131,22 +149,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/internships/:id", async (req, res) => {
     try {
       const internshipId = parseInt(req.params.id);
-      const internship = await storage.getInternship(internshipId);
-
+      const internship = await supabaseStorage.getInternshipById(internshipId);
+  
       if (!internship) {
         return res.status(404).json({ message: "Internship not found" });
       }
-
+  
       res.json(internship);
     } catch (error) {
       res.status(500).json({ message: "Server error", error });
     }
   });
-
   app.get("/api/internships/company/:companyId", async (req, res) => {
     try {
       const companyId = parseInt(req.params.companyId);
-      const internships = await storage.getInternshipsByCompany(companyId);
+      const internships = await supabaseStorage.getInternshipsByCompany(companyId);
       res.json(internships);
     } catch (error) {
       res.status(500).json({ message: "Server error", error });
@@ -167,7 +184,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       
       const validatedData = insertInternshipSchema.parse(req.body);
-      const internship = await storage.createInternship(validatedData);
+      const internship = await supabaseStorage.createInternship(validatedData);
       res.status(201).json(internship);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -185,7 +202,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
   
       const userId = parseInt(req.params.userId);
-      const applications = await storage.getApplicationsByUser(userId);
+      const applications = await supabaseStorage.getApplicationsByUser(userId);
       res.json(applications);
     } catch (error) {
       res.status(500).json({ message: "Server error", error });
@@ -199,20 +216,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const internshipId = parseInt(req.params.internshipId);
-      const internship = await storage.getInternship(internshipId);
+      const internship = await supabaseStorage.getInternshipById(internshipId);
 
       if (!internship) {
         return res.status(404).json({ message: "Internship not found" });
       }
 
       const userId = (req.user as { id: number; role: string }).id;
-      const company = await storage.getCompanyByUserId(userId);
+      const company = await supabaseStorage.getCompanyByUserId(userId);
 
       if (!company || internship.companyId !== company.id) {
         return res.status(403).json({ message: "You don't have permission to view these applications" });
       }
 
-      const applications = await storage.getApplicationsByInternship(internshipId);
+      const applications = await supabaseStorage.getApplicationsByInternship(internshipId);
       res.json(applications);
     } catch (error) {
       res.status(500).json({ message: "Server error", error });
@@ -232,7 +249,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId: req.user.id
       });
 
-      const existingApplication = await storage.getApplicationByUserAndInternship(
+      const existingApplication = await supabaseStorage.getApplicationByUserAndInternship(
         validatedData.userId,
         validatedData.internshipId
       );
@@ -241,7 +258,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "You have already applied for this internship" });
       }
 
-      const application = await storage.createApplication(validatedData);
+      const application = await supabaseStorage.createApplication(validatedData);
       res.status(201).json(application);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -266,19 +283,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid status" });
       }
 
-      const application = await storage.getApplication(applicationId);
+      const application = await supabaseStorage.getApplication(applicationId);
 
       if (!application) {
         return res.status(404).json({ message: "Application not found" });
       }
 
-      const internship = await storage.getInternship(application.internshipId);
+      const internship = await supabaseStorage.getInternship(application.internshipId);
 
       if (!internship || internship.companyId !== req.user.id) {
         return res.status(403).json({ message: "You do not have permission to update this application" });
       }
 
-      const updatedApplication = await storage.updateApplicationStatus(applicationId, status);
+      const updatedApplication = await supabaseStorage.updateApplicationStatus(applicationId, status);
       res.json(updatedApplication);
     } catch (error) {
       res.status(500).json({ message: "Server error", error });
@@ -295,7 +312,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { id: userIdFromToken } = req.user as { id: number; role: string };
       
       const userId = parseInt(req.params.userId);
-      const savedInternships = await storage.getSavedInternshipsByUser(userId);
+      const savedInternships = await supabaseStorage.getSavedInternshipsByUser(userId);
       res.json(savedInternships);
     } catch (error) {
       res.status(500).json({ message: "Server error", error });
@@ -313,7 +330,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId: req.user.id,
       });
   
-      const savedInternship = await storage.createSavedInternship(validatedData);
+      const savedInternship = await supabaseStorage.createSavedInternship(validatedData);
       res.status(201).json(savedInternship);
     } catch (error) {
       if (error instanceof z.ZodError) {
