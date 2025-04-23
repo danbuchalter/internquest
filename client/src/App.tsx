@@ -20,6 +20,11 @@ function Router() {
 
   return (
     <div className="flex flex-col min-h-screen w-full">
+      {/* ✅ Tailwind Utility Class Test */}
+      <div className="hidden p-4 bg-primary text-white">
+        Tailwind CSS is working!
+      </div>
+
       {!isAuthPage && <Navbar />}
       <div className="flex-grow w-full">
         <Switch>
@@ -30,7 +35,7 @@ function Router() {
           <Route path="/internships/:id">
             {(params) => <InternshipDetail id={params.id} />}
           </Route>
-          
+
           {/* Intern specific routes */}
           <ProtectedRoute 
             path="/intern/dashboard" 
@@ -42,7 +47,7 @@ function Router() {
             component={SavedInternships}
             requiredRole="intern"
           />
-          
+
           {/* Company specific routes */}
           <ProtectedRoute 
             path="/company/dashboard" 
@@ -54,7 +59,7 @@ function Router() {
             component={PostInternship}
             requiredRole="company"
           />
-          
+
           {/* Routes with parameters */}
           <Route path="/applications/:id">
             {(params) => (
@@ -65,13 +70,11 @@ function Router() {
               />
             )}
           </Route>
-          
-          {/* Dashboard route - redirects based on user role */}
+
+          {/* Dashboard role-based redirect */}
           <ProtectedRoute 
             path="/dashboard" 
             component={() => {
-              // This will only run if user is authenticated
-              // (ProtectedRoute handles redirecting to /auth if no user)
               try {
                 const { user } = require("@/hooks/use-auth").useAuth();
                 if (user?.role === 'intern') {
@@ -79,7 +82,6 @@ function Router() {
                 } else if (user?.role === 'company') {
                   window.location.href = "/company/dashboard";
                 }
-                // Return empty div that won't be rendered
                 return <div style={{ display: 'none' }}></div>;
               } catch (error) {
                 console.error("Error in dashboard redirect:", error);
@@ -88,7 +90,7 @@ function Router() {
               }
             }}
           />
-          
+
           <Route component={NotFound} />
         </Switch>
       </div>

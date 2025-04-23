@@ -73,8 +73,15 @@ export class SupabaseStorage implements IStorage {
     return data || undefined;
   }
 
-  async getAllInternships(): Promise<Internship[]> {
-    const { data } = await this.client.from('internships').select('*').eq('isActive', true);
+  async getAllInternships(page: number = 1, pageSize: number = 20): Promise<Internship[]> {
+    const { data, error, count } = await this.client
+      .from('internships')
+      .select('*', { count: 'exact' }) // This will also give you the total count
+      .eq('isActive', true)
+      .range((page - 1) * pageSize, page * pageSize - 1);
+    
+    if (error) throw error;
+  
     return data || [];
   }
 
