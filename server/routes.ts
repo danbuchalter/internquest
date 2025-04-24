@@ -1,7 +1,38 @@
-// routes.ts
 import { supabaseStorage } from './storage'; // Adjust the path as needed
 import { Request } from "express";
 import { JWTPayload } from "jose";
+import { z } from 'zod';  // Import Zod for validation
+
+// Define the internship schema
+const insertInternshipSchema = z.object({
+  title: z.string(),
+  companyId: z.number(),
+  industry: z.string(),
+  duration: z.string(),
+  location: z.string(),
+  description: z.string().optional(),
+  startDate: z.string().nullable().optional(),
+  endDate: z.string().nullable().optional(),
+  stipend: z.string().optional(),
+  requirements: z.string().optional(),
+  responsibilities: z.string().optional(),
+  skills: z.string().optional(),
+  isActive: z.boolean().optional(),  // Ensures isActive is a boolean or undefined, NOT nullable
+});
+
+// Define registration schemas for users (intern and company)
+const registerInternSchema = z.object({
+  fullName: z.string().min(3, "Full name must be at least 3 characters long"),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters long"),
+});
+
+const registerCompanySchema = z.object({
+  companyName: z.string().min(3, "Company name must be at least 3 characters long"),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters long"),
+  industry: z.string().min(3, "Industry must be at least 3 characters long"),
+});
 
 interface AuthUser extends JWTPayload {
   id: number;
@@ -18,13 +49,6 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { setupAuth } from "./auth";
 
-import {
-  insertInternshipSchema,
-  insertApplicationSchema,
-  insertSavedInternshipSchema,
-  applicationStatusEnum
-} from "@shared/schema";
-import { z } from "zod";
 import { jwtVerify } from "jose"; // Add the JWT verification library
 
 const SUPABASE_JWT_SECRET = process.env.SUPABASE_JWT_SECRET!;
@@ -160,6 +184,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Server error", error });
     }
   });
+  
   app.get("/api/internships/company/:companyId", async (req, res) => {
     try {
       const companyId = parseInt(req.params.companyId);
@@ -173,17 +198,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/internships", verifyToken, async (req, res) => {
     try {
       // Check if req.user is defined
-    if (!req.user) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
-     // Check if the user is a company
-     if (req.user.role !== "company") {
-      return res.status(403).json({ message: "Forbidden: You must be a company to create internships" });
-    }
-      
-      
+      if (!req.user) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+  
+      // Check if the user is a company
+      if (req.user.role !== "company") {
+        return res.status(403).json({ message: "Forbidden: You must be a company to create internships" });
+      }
+  
+      // Ensure 'isActive' is not null before validation
+      if (req.body.isActive === null) {
+        req.body.isActive = undefined;  // Convert null to undefined
+      }
+  
+      // Validate and parse input using Zod
       const validatedData = insertInternshipSchema.parse(req.body);
+  
+      // Create the internship using the validated data
       const internship = await supabaseStorage.createInternship(validatedData);
       res.status(201).json(internship);
     } catch (error) {
@@ -194,72 +226,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Application routes
-  app.get("/api/applications/user/:userId", verifyToken, async (req, res) => {
+  // Registration routes for Intern and Company
+  app.post("/api/register/intern", async (req, res) => {
     try {
-      if (!req.user || parseInt(req.params.userId) !== req.user.id) {
-        return res.status(403).json({ message: "Unauthorized" });
-      }
-  
-      const userId = parseInt(req.params.userId);
-      const applications = await supabaseStorage.getApplicationsByUser(userId);
-      res.json(applications);
-    } catch (error) {
-      res.status(500).json({ message: "Server error", error });
-    }
-  });
-
-  app.get("/api/applications/internship/:internshipId", verifyToken, async (req, res) => {
-    try {
-      if (!req.user || req.user.role !== "company") {
-        return res.status(403).json({ message: "Unauthorized" });
-      }
-
-      const internshipId = parseInt(req.params.internshipId);
-      const internship = await supabaseStorage.getInternshipById(internshipId);
-
-      if (!internship) {
-        return res.status(404).json({ message: "Internship not found" });
-      }
-
-      const userId = (req.user as { id: number; role: string }).id;
-      const company = await supabaseStorage.getCompanyByUserId(userId);
-
-      if (!company || internship.companyId !== company.id) {
-        return res.status(403).json({ message: "You don't have permission to view these applications" });
-      }
-
-      const applications = await supabaseStorage.getApplicationsByInternship(internshipId);
-      res.json(applications);
-    } catch (error) {
-      res.status(500).json({ message: "Server error", error });
-    }
-  });
-
-  app.post("/api/applications", verifyToken, async (req, res) => {
-    try {
-      if (!req.user || req.user.role !== "intern") {
-        return res.status(403).json({ message: "Unauthorized" });
-      }
-      
-      const { id: userId } = req.user as { id: number; role: string };
-
-      const validatedData = insertApplicationSchema.parse({
-        ...req.body,
-        userId: req.user.id
-      });
-
-      const existingApplication = await supabaseStorage.getApplicationByUserAndInternship(
-        validatedData.userId,
-        validatedData.internshipId
-      );
-
-      if (existingApplication) {
-        return res.status(400).json({ message: "You have already applied for this internship" });
-      }
-
-      const application = await supabaseStorage.createApplication(validatedData);
-      res.status(201).json(application);
+      const validatedData = registerInternSchema.parse(req.body);
+      // Registration logic for intern (you'd likely store in database)
+      res.status(201).json({ message: "Intern registered successfully", data: validatedData });
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: "Invalid input data", errors: error.errors });
@@ -268,70 +240,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/applications/:id/status", verifyToken, async (req, res) => {
+  app.post("/api/register/company", async (req, res) => {
     try {
-      if (!req.user || req.user.role !== "company") {
-      return res.status(403).json({ message: "Unauthorized" });
-    }
-
-    const { id: userId } = req.user as { id: number; role: string };
-
-    const applicationId = parseInt(req.params.id);
-    const { status } = req.body;
-
-      if (!applicationStatusEnum.enumValues.includes(status)) {
-        return res.status(400).json({ message: "Invalid status" });
-      }
-
-      const application = await supabaseStorage.getApplication(applicationId);
-
-      if (!application) {
-        return res.status(404).json({ message: "Application not found" });
-      }
-
-      const internship = await supabaseStorage.getInternship(application.internshipId);
-
-      if (!internship || internship.companyId !== req.user.id) {
-        return res.status(403).json({ message: "You do not have permission to update this application" });
-      }
-
-      const updatedApplication = await supabaseStorage.updateApplicationStatus(applicationId, status);
-      res.json(updatedApplication);
-    } catch (error) {
-      res.status(500).json({ message: "Server error", error });
-    }
-  });
-
-  // Saved Internship routes
-  app.get("/api/saved-internships/user/:userId", verifyToken, async (req, res) => {
-    try {
-      if (!req.user) {
-        return res.status(403).json({ message: "Unauthorized" });
-      }
-
-      const { id: userIdFromToken } = req.user as { id: number; role: string };
-      
-      const userId = parseInt(req.params.userId);
-      const savedInternships = await supabaseStorage.getSavedInternshipsByUser(userId);
-      res.json(savedInternships);
-    } catch (error) {
-      res.status(500).json({ message: "Server error", error });
-    }
-  });
-
-  app.post("/api/saved-internships", verifyToken, async (req, res) => {
-    try {
-      if (!req.user) {
-        return res.status(403).json({ message: "Unauthorized" });
-      }
-  
-      const validatedData = insertSavedInternshipSchema.parse({
-        ...req.body,
-        userId: req.user.id,
-      });
-  
-      const savedInternship = await supabaseStorage.createSavedInternship(validatedData);
-      res.status(201).json(savedInternship);
+      const validatedData = registerCompanySchema.parse(req.body);
+      // Registration logic for company (you'd likely store in database)
+      res.status(201).json({ message: "Company registered successfully", data: validatedData });
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: "Invalid input data", errors: error.errors });
@@ -340,6 +253,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ... other route definitions ...
+
+  // At the very bottom of your function
   const server = createServer(app);
   return server;
 }

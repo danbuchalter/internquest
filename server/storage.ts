@@ -247,7 +247,50 @@ export const supabaseStorage = {
   
     return data;
   },
+  createSavedInternship: async (data: { userId: number; internshipId: number }) => {
+    const { userId, internshipId } = data;
+  
+    const { data: inserted, error } = await supabase
+      .from('saved_internships') // Ensure this is the correct table name
+      .insert([
+        { user_id: userId, internship_id: internshipId }
+      ]);
+  
+    if (error) {
+      throw new Error(error.message);
+    }
+  
+    return inserted;
+  },
 
+  getApplication: async (applicationId: number) => {
+    const { data, error } = await supabase
+      .from('applications') // Make sure this matches your table name
+      .select('*')
+      .eq('id', applicationId)
+      .single(); // Get a single application
+  
+    if (error) {
+      throw new Error(error.message);
+    }
+  
+    return data;
+  },
+
+  updateApplicationStatus: async (applicationId: number, status: string) => {
+    const { data, error } = await supabase
+      .from("applications")
+      .update({ status })
+      .eq("id", applicationId)
+      .select()
+      .single();
+  
+    if (error) {
+      throw new Error(`Error updating application status: ${error.message}`);
+    }
+  
+    return data;
+  },
   
   
 };
