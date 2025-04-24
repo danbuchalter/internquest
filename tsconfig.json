@@ -5,7 +5,8 @@
     "incremental": true,
     "tsBuildInfoFile": "./.tsbuildinfo",
     "noEmit": true,
-    "module": "esnext", // Change this to commonjs
+    "target": "es2022",
+    "module": "esnext",
     "strict": true,
     "lib": ["esnext", "dom", "dom.iterable"],
     "jsx": "preserve",
@@ -13,6 +14,7 @@
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,
     "moduleResolution": "node",
+    "resolveJsonModule": true,
     "baseUrl": ".",
     "types": ["node", "vite/client"],
     "typeRoots": ["./node_modules/@types", "./types"],
