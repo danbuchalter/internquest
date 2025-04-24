@@ -1,23 +1,29 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import path from 'path';
+
+// Convert __dirname to work in ES module scope
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename); // Get the current directory
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    react(),  // This is needed for React to work with Vite
+    react(),
   ],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'client/src'),  // Customize this based on your structure
-      '@shared': path.resolve(__dirname, 'shared'),  // Adjust if you have a shared directory
+      '@': path.resolve(__dirname, 'client/src'),  // Ensure path is resolved correctly
+      '@shared': path.resolve(__dirname, 'shared'),  // Shared directory path
     },
   },
   server: {
-    port: 3000,  // Adjust port if needed
+    port: 3000,  // Customize port if necessary
   },
   build: {
-    target: 'esnext',  // This targets modern browsers for optimized output
-    sourcemap: true,  // Optionally generate source maps for easier debugging
+    target: 'esnext',  // Modern JavaScript output
+    sourcemap: true,  // Enable source maps for debugging
   },
 });

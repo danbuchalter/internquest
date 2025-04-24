@@ -179,6 +179,14 @@ export function setupAuth(app: Express) {
         return res.status(400).send("Email already exists");
       }
 
+      type SupabaseUser = {
+        id: number;
+        username: string;
+        email: string;
+        password: string;
+        role: string;
+      };
+      
       const { data: user, error } = await supabase
         .from('users')
         .insert([
@@ -188,12 +196,13 @@ export function setupAuth(app: Express) {
             password: await hashPassword(userInfo.password),
           },
         ])
-        .single();
-
-      if (error) {
-        return res.status(400).send(error.message);
+        .select()
+        .single<SupabaseUser>();
+      
+      if (error || !user) {
+        return res.status(400).send(error?.message || "User creation failed");
       }
-
+      
       await supabase
         .from('companies')
         .insert([
@@ -202,7 +211,6 @@ export function setupAuth(app: Express) {
             userId: user.id,
           },
         ]);
-
       req.login(user, (err) => {
         if (err) return next(err);
         res.status(201).json(user);
