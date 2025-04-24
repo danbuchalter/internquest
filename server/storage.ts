@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 
 // Initialize Supabase with your credentials
 const supabaseUrl = 'https://dxrtrrnoigstzfpinjlk.supabase.co'; // Replace with your Supabase URL
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4cnRycm5vaWdzdHpmcGluamxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQyOTI1NDEsImV4cCI6MjA1OTg2ODU0MX0.mExbZ_0zVmbkotdPzl9AMtoLJFzkn1k1UvGrsB8kywA'; // Replace with your Supabase API Key
+const supabaseKey = 'your-supabase-api-key'; // Replace with your Supabase API Key
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export const supabaseStorage = {
@@ -192,33 +192,41 @@ export const supabaseStorage = {
     }
   },
 
-  getApplicationsByInternship: async (internshipId: number) => {
-    const { data, error } = await supabase
-      .from('applications')
-      .select('*')
-      .eq('internship_id', internshipId); // Assuming 'internship_id' is the correct column name in the applications table
-    
-    if (error) {
-      throw new Error(error.message);
+  // Additional user role and redirection logic
+  setUserRole: async (userId: number, role: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .update({ role })
+        .eq('id', userId);
+
+      if (error) {
+        throw new Error(`Error setting user role: ${error.message}`);
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error setting user role:', error);
+      throw error;
     }
-    
-    return data;
   },
 
-  getApplicationByUserAndInternship: async (userId: number, internshipId: number) => {
-    const { data, error } = await supabase
-      .from('applications')
-      .select('*')
-      .eq('user_id', userId)  // Assuming 'user_id' is the column in the applications table that holds user IDs
-      .eq('internship_id', internshipId);  // Assuming 'internship_id' is the column in the applications table that holds internship IDs
-  
-    if (error) {
-      throw new Error(error.message);
+  redirectToRolePage: (role: string) => {
+    switch (role) {
+      case 'intern':
+        window.location.href = '/intern-dashboard';
+        break;
+      case 'company':
+        window.location.href = '/company-dashboard';
+        break;
+      case 'admin':
+        window.location.href = '/admin-dashboard';
+        break;
+      default:
+        console.log('Role not recognized');
     }
-  
-    return data.length > 0 ? data[0] : null;  // Return the first result if exists, otherwise return null
   },
-
+  
   createApplication: async (applicationData: { userId: number; internshipId: number; }) => {
     const { userId, internshipId } = applicationData;
   
@@ -291,6 +299,4 @@ export const supabaseStorage = {
   
     return data;
   },
-  
-  
 };
