@@ -9,6 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
+interface SavedInternship {
+  id: number;
+  internshipId: number;
+  internship: Internship;
+  savedAt: string;
+}
+
 export default function SavedInternships() {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -42,8 +49,8 @@ export default function SavedInternships() {
     },
   });
 
-  // Get saved internship details
-  const savedInternshipsWithDetails = [];
+  // Type the savedInternshipsWithDetails properly
+  const savedInternshipsWithDetails: SavedInternship[] = savedInternships || [];
 
   const isLoading = savedLoading || internshipsLoading;
 
