@@ -147,7 +147,7 @@ export default function StudentDashboard() {
                             <h3 className="font-semibold">{application.internship?.title}</h3>
                             <p className="text-sm text-gray-600">
                               {application.internship?.location} · Applied on{" "}
-                              {new Date(application.createdAt).toLocaleDateString()}
+                              {application.createdAt ? new Date(application.createdAt).toLocaleDateString() : "N/A"}
                             </p>
                           </div>
                           <Badge
