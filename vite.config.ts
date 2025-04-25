@@ -1,3 +1,4 @@
+// vite.config.ts
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'url';
@@ -13,6 +14,7 @@ export default defineConfig({
   plugins: [
     react(),
   ],
+  root: 'client',  // Ensure Vite serves from the client folder
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'client/src'),  // Ensure path is resolved correctly
