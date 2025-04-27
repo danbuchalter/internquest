@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 
 // Initialize Supabase with your credentials
 const supabaseUrl = 'https://dxrtrrnoigstzfpinjlk.supabase.co'; // Replace with your Supabase URL
-const supabaseKey = 'your-supabase-api-key'; // Replace with your Supabase API Key
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4cnRycm5vaWdzdHpmcGluamxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQyOTI1NDEsImV4cCI6MjA1OTg2ODU0MX0.mExbZ_0zVmbkotdPzl9AMtoLJFzkn1k1UvGrsB8kywA'; // Replace with your Supabase API Key
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export const supabaseStorage = {
