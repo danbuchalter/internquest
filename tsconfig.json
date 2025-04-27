@@ -1,5 +1,10 @@
 {
-  "include": ["client/src/**/*", "shared/**/*", "server/**/*"],
+  "include": [
+    "client/src/**/*",
+    "shared/**/*",
+    "server/**/*",
+    "drizzle.config.ts"     // <-- ADD THIS LINE
+  ],
   "exclude": ["node_modules", "build", "dist", "**/*.test.ts"],
   "compilerOptions": {
     "incremental": true,
@@ -16,7 +21,7 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "baseUrl": ".",
-    "types": ["node", "vite/client"],  // Ensure vite/client and node are included
+    "types": ["node", "vite/client"],
     "typeRoots": ["./node_modules/@types", "./types"],
     "paths": {
       "@/*": ["client/src/*"],
