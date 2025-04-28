@@ -11,14 +11,15 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
-  
+
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
-  
+
   next();
 });
 
+// Logging middleware
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -49,9 +50,10 @@ app.use((req, res, next) => {
   next();
 });
 
-(async () => {
+async function startServer() {
   const server = await registerRoutes(app);
 
+  // Global error handler
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
@@ -62,15 +64,21 @@ app.use((req, res, next) => {
     }
   });
 
-  // Only setup Vite in development after routes are registered
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
-  }
-
   const port = 5000;
-  server.listen(port, "localhost", () => {
-    log(`serving on http://localhost:${port}`);
-  });
-})();
+
+  if (process.env.NODE_ENV === "development") {
+    // Setup Vite dev middleware in development
+    await setupVite(app, server);
+    server.listen(port, () => {
+      log(`dev server running on http://localhost:${port}`);
+    });
+  } else {
+    // Serve static frontend files in production
+    serveStatic(app);
+    server.listen(port, () => {
+      log(`production server running on http://localhost:${port}`);
+    });
+  }
+}
+
+startServer();
