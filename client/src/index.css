@@ -31,6 +31,13 @@
     width: 100%;
     overflow-x: hidden;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures body takes up at least the full viewport height */
+  }
+
+  .flex-grow {
+    flex-grow: 1; /* Ensures content grows and footer stays at the bottom */
   }
 
   img {
@@ -74,7 +81,7 @@
     background-color: white; 
     margin: 0.5rem 0;
   }
-  
+
   /* Fix for mobile viewport sizing */
   @media screen and (max-width: 768px) {
     #root {
@@ -159,5 +166,10 @@
     .p-4 {
       padding: 1.25rem !important;
     }
+  }
+
+  /* Footer adjustment to stick at the bottom */
+  footer {
+    margin-top: auto; /* Ensures the footer sticks to the bottom of the screen */
   }
 }
