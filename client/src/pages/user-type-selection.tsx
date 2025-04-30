@@ -59,9 +59,9 @@ export default function UserTypeSelection() {
               </ul>
             </CardContent>
             <CardFooter>
-              <Button 
-                onClick={() => handleUserTypeSelection('intern')} 
-                className="w-full text-xl p-6 font-bold"
+              <Button
+                onClick={() => handleUserTypeSelection('intern')}
+                className="w-full text-xl p-6 font-bold bg-blue-500 text-white border-2 border-blue-500 rounded-md hover:bg-blue-600 hover:border-blue-600 transition-all duration-300"
               >
                 Register as an Intern
               </Button>
@@ -106,9 +106,9 @@ export default function UserTypeSelection() {
               </ul>
             </CardContent>
             <CardFooter>
-              <Button 
-                onClick={() => handleUserTypeSelection('company')} 
-                className="w-full text-xl p-6 font-bold"
+              <Button
+                onClick={() => handleUserTypeSelection('company')}
+                className="w-full text-xl p-6 font-bold bg-blue-500 text-white border-2 border-blue-500 rounded-md hover:bg-blue-600 hover:border-blue-600 transition-all duration-300"
               >
                 Register as a Company
               </Button>
