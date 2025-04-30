@@ -3,10 +3,12 @@
 @tailwind utilities;
 
 @layer base {
+  /* Apply a border to all elements */
   * {
     @apply border-[hsl(var(--border))];
   }
 
+  /* Global HTML and Body styles */
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
@@ -31,22 +33,16 @@
     width: 100%;
     overflow-x: hidden;
     position: relative;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh; /* Ensures body takes up at least the full viewport height */
   }
 
-  .flex-grow {
-    flex-grow: 1; /* Ensures content grows and footer stays at the bottom */
-  }
-
+  /* Ensure images scale correctly */
   img {
     max-width: 100%;
     height: auto;
     display: block;
   }
 
-  /* Style for file inputs */
+  /* File input styling */
   input[type="file"] {
     width: 100%;
     max-width: 100%;
@@ -57,19 +53,18 @@
     line-height: 1.5rem;
   }
   
-  /* Ensure form container is nice and big */
+  /* Container for centering content */
   .container {
     max-width: 1200px;
     width: 100%;
     margin: 0 auto;
   }
-  
-  /* Make auth form generous in size */
+
+  /* Styling for authentication forms */
   .auth-container {
     font-size: 1.1rem;
   }
   
-  /* Better form styling */
   .auth-container label {
     font-weight: 600;
     font-size: 1rem;
@@ -82,7 +77,7 @@
     margin: 0.5rem 0;
   }
 
-  /* Fix for mobile viewport sizing */
+  /* Mobile-specific styles */
   @media screen and (max-width: 768px) {
     #root {
       width: 100vw;
@@ -97,12 +92,12 @@
       padding-right: 0.5rem !important;
     }
 
-    /* Zoom the entire form container at mobile sizes */
+    /* Zoom the form container on mobile */
     .auth-container {
       transform: scale(1.05);
       transform-origin: top center;
     }
-    
+
     input[type="file"] {
       width: 100%;
       max-width: 100%;
@@ -111,12 +106,13 @@
       height: auto;
       margin-bottom: 0.5rem;
     }
-    
+
+    /* Increase padding in primary background elements */
     .bg-primary {
       padding: 1.5rem !important;
     }
 
-    /* Make text larger on mobile */
+    /* Adjust font sizes for headings */
     h1 {
       font-size: 2.2rem !important;
     }
@@ -128,13 +124,15 @@
     h3 {
       font-size: 1.75rem !important;
     }
-    
+
+    /* Larger font for labels */
     label {
       font-size: 1.3rem !important;
       margin-bottom: 0.75rem !important;
       font-weight: bold !important;
     }
-    
+
+    /* Adjust font size and padding for form elements */
     input, select, textarea {
       font-size: 1.3rem !important;
       height: auto !important;
@@ -146,30 +144,26 @@
       font-size: 1.3rem !important;
       padding: 1rem !important;
     }
-    
-    /* Increase spacing between form elements */
+
+    /* Increase spacing between form items */
     .space-y-4 {
       margin-top: 1.5rem !important;
       margin-bottom: 1.5rem !important;
     }
-    
-    /* Make boxed elements more prominent */
+
+    /* Make borders more prominent */
     .border {
       border-width: 2px !important;
     }
-    
+
+    /* Rounded corners for certain elements */
     .rounded-lg {
       border-radius: 0.75rem !important;
     }
-    
-    /* Increase padding in form items */
+
+    /* Increase padding for elements with .p-4 class */
     .p-4 {
       padding: 1.25rem !important;
     }
-  }
-
-  /* Footer adjustment to stick at the bottom */
-  footer {
-    margin-top: auto; /* Ensures the footer sticks to the bottom of the screen */
   }
 }
