@@ -166,4 +166,9 @@
       padding: 1.25rem !important;
     }
   }
+
+  /* ✅ Add this new utility class for stat numbers */
+  .stat-number {
+    @apply text-black;
+  }
 }
