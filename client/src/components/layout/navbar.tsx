@@ -49,11 +49,21 @@ export default function Navbar() {
             </div>
           </div>
           
+          {/* Ensure both Log In and Sign Up buttons are visible */}
           <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-3">
-            <Link href="/auth?tab=login" className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-primary hover:bg-primary-50 transition">
+            {/* Log In Button */}
+            <Link 
+              href="/auth?tab=login" 
+              className="px-4 py-2 text-sm font-medium rounded-md text-primary hover:bg-primary-50 transition"
+            >
               Log In
             </Link>
-            <Link href="/register" className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 transition">
+            
+            {/* Sign Up Button */}
+            <Link 
+              href="/register" 
+              className="px-4 py-2 text-sm font-medium rounded-md bg-blue-500 text-white hover:bg-blue-700 transition"
+            >
               Sign Up
             </Link>
           </div>
@@ -90,9 +100,12 @@ export default function Navbar() {
           
           <div className="pt-4 pb-3 border-t border-gray-200">
             <div className="flex items-center px-4 space-x-3">
+              {/* Log In Button (Mobile) */}
               <Link href="/auth?tab=login" className="block px-4 py-2 w-full text-center text-sm font-medium rounded-md text-primary hover:bg-primary-50 transition">
                 Log In
               </Link>
+              
+              {/* Sign Up Button (Mobile) */}
               <Link href="/register" className="block px-4 py-2 w-full text-center text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 transition">
                 Sign Up
               </Link>
