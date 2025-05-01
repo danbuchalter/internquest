@@ -53,9 +53,9 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/#testimonials" className="text-base text-gray-300 hover:text-white">
+                <a href="/#testimonials" className="text-base text-gray-300 hover:text-white">
                   Success Stories
-                </Link>
+                </a>
               </li>
             </ul>
           </div>
@@ -79,9 +79,9 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/#for-companies" className="text-base text-gray-300 hover:text-white">
+                <a href="/#for-companies" className="text-base text-gray-300 hover:text-white">
                   Partner Benefits
-                </Link>
+                </a>
               </li>
             </ul>
           </div>
