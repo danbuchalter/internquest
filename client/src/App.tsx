@@ -14,20 +14,25 @@ import { ProtectedRoute } from "./lib/protected-route";
 import Navbar from "./components/layout/navbar";
 import Footer from "./components/layout/footer";
 
+// Static content pages
+import ApplicationTips from "@/pages/ApplicationTips";
+import InternshipGuide from "@/pages/InternshipGuide";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import TermsOfService from "@/pages/TermsofService";
+import Contact from "@/pages/Contact";
+import OurMission from "@/pages/OurMission";
+
 function Router() {
   const [location] = useLocation();
-  const isAuthPage = location.includes('/auth') || location.includes('/register');
+  const isAuthPage = location.includes("/auth") || location.includes("/register");
 
   return (
     <div className="flex flex-col min-h-screen w-full">
-      {/* ✅ Tailwind Utility Class Test */}
-      <div className="hidden p-4 bg-primary text-white">
-        Tailwind CSS is working!
-      </div>
-
       {!isAuthPage && <Navbar />}
+
       <div className="flex-grow w-full">
         <Switch>
+          {/* Public routes */}
           <Route path="/" component={HomePage} />
           <Route path="/register" component={UserTypeSelection} />
           <Route path="/auth" component={AuthPage} />
@@ -36,64 +41,56 @@ function Router() {
             {(params) => <InternshipDetail id={params.id} />}
           </Route>
 
-          {/* Intern specific routes */}
-          <ProtectedRoute 
-            path="/intern/dashboard" 
-            component={StudentDashboard}
-            requiredRole="intern"
-          />
-          <ProtectedRoute 
-            path="/saved-internships" 
-            component={SavedInternships}
-            requiredRole="intern"
-          />
+          {/* Intern routes */}
+          <ProtectedRoute path="/intern/dashboard" component={StudentDashboard} requiredRole="intern" />
+          <ProtectedRoute path="/saved-internships" component={SavedInternships} requiredRole="intern" />
 
-          {/* Company specific routes */}
-          <ProtectedRoute 
-            path="/company/dashboard" 
-            component={CompanyDashboard}
-            requiredRole="company"
-          />
-          <ProtectedRoute 
-            path="/post-internship" 
-            component={PostInternship}
-            requiredRole="company"
-          />
+          {/* Company routes */}
+          <ProtectedRoute path="/company/dashboard" component={CompanyDashboard} requiredRole="company" />
+          <ProtectedRoute path="/post-internship" component={PostInternship} requiredRole="company" />
 
-          {/* Routes with parameters */}
+          {/* View applications */}
           <Route path="/applications/:id">
             {(params) => (
-              <ProtectedRoute 
-                path="/applications/:id" 
+              <ProtectedRoute
+                path="/applications/:id"
                 component={() => <ApplicationsView id={params.id} />}
                 requiredRole="company"
               />
             )}
           </Route>
 
-          {/* Dashboard role-based redirect */}
-          <ProtectedRoute 
-            path="/dashboard" 
+          {/* Static footer-linked pages */}
+          <Route path="/application-tips" component={ApplicationTips} />
+          <Route path="/internship-guide" component={InternshipGuide} />
+          <Route path="/privacy-policy" component={PrivacyPolicy} />
+          <Route path="/terms-of-service" component={TermsOfService} />
+          <Route path="/contact" component={Contact} />
+          <Route path="/about/our-mission" component={OurMission} />
+
+          {/* Role-based redirect */}
+          <ProtectedRoute
+            path="/dashboard"
             component={() => {
               try {
                 const { user } = require("@/hooks/use-auth").useAuth();
-                if (user?.role === 'intern') {
-                  window.location.href = "/intern/dashboard";
-                } else if (user?.role === 'company') {
-                  window.location.href = "/company/dashboard";
-                }
-                return <div style={{ display: 'none' }}></div>;
+                if (user?.role === "intern") window.location.href = "/intern/dashboard";
+                else if (user?.role === "company") window.location.href = "/company/dashboard";
+                else window.location.href = "/auth";
+                return <div style={{ display: "none" }} />;
               } catch (error) {
-                console.error("Error in dashboard redirect:", error);
+                console.error("Dashboard redirect error:", error);
                 window.location.href = "/auth";
-                return <div style={{ display: 'none' }}></div>;
+                return <div style={{ display: "none" }} />;
               }
             }}
           />
 
+          {/* Fallback */}
           <Route component={NotFound} />
         </Switch>
       </div>
+
       <Footer />
     </div>
   );
