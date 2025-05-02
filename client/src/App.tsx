@@ -34,7 +34,7 @@ function Router() {
           <Route path="/auth" component={AuthPage} />
           <Route path="/internships" component={InternshipList} />
           <Route path="/internships/:id">
-            {(params) => <InternshipDetail id={params.id} />}
+            {(params: { id: string }) => <InternshipDetail id={params.id} />}
           </Route>
 
           {/* Intern specific routes */}
@@ -63,7 +63,7 @@ function Router() {
 
           {/* Applications route with parameters */}
           <Route path="/applications/:id">
-            {(params) => (
+            {(params: { id: string; }) => (
               <ProtectedRoute
                 path="/applications/:id"
                 component={() => <ApplicationsView id={params.id} />}
