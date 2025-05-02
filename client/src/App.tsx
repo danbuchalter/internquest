@@ -16,7 +16,7 @@ import Footer from "./components/layout/footer";
 
 function Router() {
   const [location] = useLocation();
-  const isAuthPage = location.includes('/auth') || location.includes('/register');
+  const isAuthPage = location.includes("/auth") || location.includes("/register");
 
   return (
     <div className="flex flex-col min-h-screen w-full">
@@ -26,6 +26,7 @@ function Router() {
       </div>
 
       {!isAuthPage && <Navbar />}
+
       <div className="flex-grow w-full">
         <Switch>
           <Route path="/" component={HomePage} />
@@ -37,56 +38,56 @@ function Router() {
           </Route>
 
           {/* Intern specific routes */}
-          <ProtectedRoute 
-            path="/intern/dashboard" 
+          <ProtectedRoute
+            path="/intern/dashboard"
             component={StudentDashboard}
             requiredRole="intern"
           />
-          <ProtectedRoute 
-            path="/saved-internships" 
+          <ProtectedRoute
+            path="/saved-internships"
             component={SavedInternships}
             requiredRole="intern"
           />
 
           {/* Company specific routes */}
-          <ProtectedRoute 
-            path="/company/dashboard" 
+          <ProtectedRoute
+            path="/company/dashboard"
             component={CompanyDashboard}
             requiredRole="company"
           />
-          <ProtectedRoute 
-            path="/post-internship" 
+          <ProtectedRoute
+            path="/post-internship"
             component={PostInternship}
             requiredRole="company"
           />
 
-          {/* Routes with parameters */}
+          {/* Applications route with parameters */}
           <Route path="/applications/:id">
             {(params) => (
-              <ProtectedRoute 
-                path="/applications/:id" 
+              <ProtectedRoute
+                path="/applications/:id"
                 component={() => <ApplicationsView id={params.id} />}
                 requiredRole="company"
               />
             )}
           </Route>
 
-          {/* Dashboard role-based redirect */}
-          <ProtectedRoute 
-            path="/dashboard" 
+          {/* Role-based dashboard redirect */}
+          <ProtectedRoute
+            path="/dashboard"
             component={() => {
               try {
                 const { user } = require("@/hooks/use-auth").useAuth();
-                if (user?.role === 'intern') {
+                if (user?.role === "intern") {
                   window.location.href = "/intern/dashboard";
-                } else if (user?.role === 'company') {
+                } else if (user?.role === "company") {
                   window.location.href = "/company/dashboard";
                 }
-                return <div style={{ display: 'none' }}></div>;
+                return <div style={{ display: "none" }} />;
               } catch (error) {
                 console.error("Error in dashboard redirect:", error);
                 window.location.href = "/auth";
-                return <div style={{ display: 'none' }}></div>;
+                return <div style={{ display: "none" }} />;
               }
             }}
           />
@@ -94,6 +95,7 @@ function Router() {
           <Route component={NotFound} />
         </Switch>
       </div>
+
       <Footer />
     </div>
   );

@@ -6,41 +6,6 @@ import React from "react";
 export default function HeroSection() {
   return (
     <div className="relative bg-white overflow-hidden min-h-screen flex flex-col">
-      {/* Navbar */}
-      <nav className="flex items-center justify-between px-6 py-4 bg-white shadow-md">
-        <div className="text-2xl font-bold text-gray-800">InternQuest</div>
-        <div className="hidden md:flex gap-6 text-gray-600 font-medium">
-          <a href="#internships" className="hover:text-blue-600">
-            Internships
-          </a>
-          <a href="#companies" className="hover:text-blue-600">
-            For Companies
-          </a>
-          <a href="#howitworks" className="hover:text-blue-600">
-            How It Works
-          </a>
-        </div>
-        <div className="hidden md:flex gap-4">
-          <Link href="/login">
-            <button className="px-4 py-2 text-blue-600 border border-blue-600 rounded hover:bg-blue-600 hover:text-white">
-              Log In
-            </button>
-          </Link>
-          <Link href="/register">
-            <button className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">
-              Sign Up
-            </button>
-          </Link>
-        </div>
-
-        {/* Mobile menu button */}
-        <div className="md:hidden">
-          <button className="text-gray-600 focus:outline-none">
-            ☰
-          </button>
-        </div>
-      </nav>
-
       {/* Hero Section */}
       <div className="flex-grow relative">
         <div className="max-w-7xl mx-auto">
