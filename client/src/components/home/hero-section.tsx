@@ -1,7 +1,7 @@
 "use client";
 
-import { Link } from "wouter";
 import React from "react";
+import Link from "next/link"; // ✅ Required for Next.js routing
 
 export default function HeroSection() {
   return (
@@ -15,20 +15,19 @@ export default function HeroSection() {
               <span className="block text-primary">With InternQuest</span>
             </h1>
             <p className="mt-4 text-lg text-gray-600">
-              The free platform connecting South African teens with internships that launch careers. Find opportunities that match your passion and build your professional future.
+              The free platform connecting South African teens with internships that launch careers.
+              Find opportunities that match your passion and build your professional future.
             </p>
             <div className="mt-6 space-x-4">
-              <Link
-                href="/internships"
-                className="inline-block px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary/90"
-              >
-                Find Internships
+              <Link href="/internships">
+                <a className="inline-block px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary/90">
+                  Find Internships
+                </a>
               </Link>
-              <Link
-                href="/post-internship"
-                className="inline-block px-8 py-3 border border-primary text-base font-medium rounded-md text-primary hover:bg-primary/10"
-              >
-                Post Internships
+              <Link href="/post-internship">
+                <a className="inline-block px-8 py-3 border border-primary text-base font-medium rounded-md text-primary hover:bg-primary/10">
+                  Post Internships
+                </a>
               </Link>
             </div>
           </div>
