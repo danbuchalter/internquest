@@ -1,3 +1,4 @@
+import React from "react"; // Required for React <17 or if tsconfig lacks "jsx": "react-jsx"
 import { Link } from "wouter";
 import { 
   Facebook, 
@@ -33,7 +34,7 @@ export default function Footer() {
               </a>
             </div>
           </div>
-                
+          
           <div>
             <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">For Students</h3>
             <ul className="mt-4 space-y-4">
@@ -57,7 +58,7 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-                
+          
           <div>
             <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">For Companies</h3>
             <ul className="mt-4 space-y-4">
@@ -81,7 +82,7 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-                
+          
           <div>
             <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">About</h3>
             <ul className="mt-4 space-y-4">
@@ -100,7 +101,7 @@ export default function Footer() {
             </ul>
           </div>
         </div>
-            
+
         <div className="mt-12 border-t border-gray-700 pt-8">
           <p className="text-base text-gray-400 text-center">
             &copy; {new Date().getFullYear()} InternQuest. All rights reserved.
