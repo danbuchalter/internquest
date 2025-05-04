@@ -49,7 +49,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-base text-gray-300 hover:text-white">Application Tips</a>
+                <Link href="/application-tips" className="text-base text-gray-300 hover:text-white">Application Tips</Link>
               </li>
               <li>
                 <Link href="/#testimonials" className="text-base text-gray-300 hover:text-white">
@@ -73,7 +73,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-base text-gray-300 hover:text-white">Internship Guide</a>
+                <Link href="/internship-guide" className="text-base text-gray-300 hover:text-white">Internship Guide</Link>
               </li>
               <li>
                 <Link href="/#for-companies" className="text-base text-gray-300 hover:text-white">
@@ -87,16 +87,16 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">About</h3>
             <ul className="mt-4 space-y-4">
               <li>
-                <a href="#" className="text-base text-gray-300 hover:text-white">Our Mission</a>
+                <Link href="/our-mission" className="text-base text-gray-300 hover:text-white">Our Mission</Link>
               </li>
               <li>
-                <a href="#" className="text-base text-gray-300 hover:text-white">Privacy Policy</a>
+                <Link href="/privacy-policy" className="text-base text-gray-300 hover:text-white">Privacy Policy</Link>
               </li>
               <li>
-                <a href="#" className="text-base text-gray-300 hover:text-white">Terms of Service</a>
+                <Link href="/terms-of-service" className="text-base text-gray-300 hover:text-white">Terms of Service</Link>
               </li>
               <li>
-                <a href="#" className="text-base text-gray-300 hover:text-white">Contact Us</a>
+                <Link href="/contact-us" className="text-base text-gray-300 hover:text-white">Contact Us</Link>
               </li>
             </ul>
           </div>
