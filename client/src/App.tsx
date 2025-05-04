@@ -14,13 +14,22 @@ import { ProtectedRoute } from "./lib/protected-route";
 import Navbar from "./components/layout/navbar";
 import Footer from "./components/layout/footer";
 
+// ✅ Informational pages
+import ApplicationTips from "@/pages/ApplicationTips";
+import InternshipGuide from "@/pages/InternshipGuide";
+import OurMission from "@/pages/OurMission";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import PartnerBenefits from "@/pages/PartnerBenefits";
+import TermsOfService from "@/pages/TermsOfService";
+import ContactUs from "@/pages/ContactUs";
+
 function Router() {
   const [location] = useLocation();
   const isAuthPage = location.includes("/auth") || location.includes("/register");
 
   return (
     <div className="flex flex-col min-h-screen w-full">
-      {/* ✅ Tailwind Utility Class Test */}
+      {/* ✅ Tailwind test block (optional, remove if not needed) */}
       <div className="hidden p-4 bg-primary text-white">
         Tailwind CSS is working!
       </div>
@@ -29,6 +38,7 @@ function Router() {
 
       <div className="flex-grow w-full">
         <Switch>
+          {/* Core routes */}
           <Route path="/" component={HomePage} />
           <Route path="/register" component={UserTypeSelection} />
           <Route path="/auth" component={AuthPage} />
@@ -37,7 +47,16 @@ function Router() {
             {(params: { id: string }) => <InternshipDetail id={params.id} />}
           </Route>
 
-          {/* Intern specific routes */}
+          {/* Informational Pages */}
+          <Route path="/application-tips" component={ApplicationTips} />
+          <Route path="/internship-guide" component={InternshipGuide} />
+          <Route path="/our-mission" component={OurMission} />
+          <Route path="/privacy-policy" component={PrivacyPolicy} />
+          <Route path="/partner-benefits" component={PartnerBenefits} />
+          <Route path="/terms-of-service" component={TermsOfService} />
+          <Route path="/contact-us" component={ContactUs} />
+
+          {/* Intern Routes */}
           <ProtectedRoute
             path="/intern/dashboard"
             component={StudentDashboard}
@@ -49,7 +68,7 @@ function Router() {
             requiredRole="intern"
           />
 
-          {/* Company specific routes */}
+          {/* Company Routes */}
           <ProtectedRoute
             path="/company/dashboard"
             component={CompanyDashboard}
@@ -61,9 +80,9 @@ function Router() {
             requiredRole="company"
           />
 
-          {/* Applications route with parameters */}
+          {/* Company Application Viewer */}
           <Route path="/applications/:id">
-            {(params: { id: string; }) => (
+            {(params: { id: string }) => (
               <ProtectedRoute
                 path="/applications/:id"
                 component={() => <ApplicationsView id={params.id} />}
@@ -72,7 +91,7 @@ function Router() {
             )}
           </Route>
 
-          {/* Role-based dashboard redirect */}
+          {/* Dynamic Dashboard Redirect */}
           <ProtectedRoute
             path="/dashboard"
             component={() => {
@@ -92,6 +111,7 @@ function Router() {
             }}
           />
 
+          {/* Fallback */}
           <Route component={NotFound} />
         </Switch>
       </div>
