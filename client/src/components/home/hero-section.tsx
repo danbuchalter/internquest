@@ -17,18 +17,12 @@ export default function HeroSection() {
             <p className="mt-4 text-lg text-gray-600">
               The free platform connecting South African teens with internships that launch careers. Find opportunities that match your passion and build your professional future.
             </p>
-            <div className="mt-6 space-x-4">
+            <div className="mt-6">
               <Link
                 href="/internships"
                 className="inline-block px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary/90"
               >
                 Find Internships
-              </Link>
-              <Link
-                href="/post-internship"
-                className="inline-block px-8 py-3 border border-primary text-base font-medium rounded-md text-primary hover:bg-primary/10"
-              >
-                Post Internships
               </Link>
             </div>
           </div>
