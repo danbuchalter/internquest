@@ -6,6 +6,7 @@ import {
   Instagram, 
   Linkedin 
 } from "lucide-react";
+import { Link as ScrollLink } from "react-scroll"; // Import the react-scroll Link
 
 export default function Footer() {
   return (
@@ -52,9 +53,16 @@ export default function Footer() {
                 <Link href="/application-tips" className="text-base text-gray-300 hover:text-white">Application Tips</Link>
               </li>
               <li>
-                <Link href="/#testimonials" className="text-base text-gray-300 hover:text-white">
+                {/* Use ScrollLink to trigger smooth scroll to testimonials */}
+                <ScrollLink
+                  to="testimonials" 
+                  smooth={true} 
+                  duration={500} 
+                  offset={-50} // Adjust if you have a fixed header
+                  className="text-base text-gray-300 hover:text-white"
+                >
                   Success Stories
-                </Link>
+                </ScrollLink>
               </li>
             </ul>
           </div>
