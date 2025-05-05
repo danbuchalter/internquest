@@ -15,7 +15,7 @@ export default function HomePage() {
       <HowItWorks />
       <FeaturedInternships />
       <ForCompanies />
-      {/* Ensure that the id="testimonials" is on the section */}
+      {/* Testimonials section should already have id="testimonials" */}
       <div id="testimonials">
         <Testimonials />
       </div>
