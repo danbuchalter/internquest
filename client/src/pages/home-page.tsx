@@ -1,3 +1,5 @@
+// home-page.tsx
+import { Element } from "react-scroll";
 import HeroSection from "@/components/home/hero-section";
 import StatsSection from "@/components/home/stats-section";
 import HowItWorks from "@/components/home/how-it-works";
@@ -13,9 +15,15 @@ export default function HomePage() {
       <HeroSection />
       <StatsSection />
       <HowItWorks />
-      <FeaturedInternships />
-      <ForCompanies />
-      <Testimonials />
+      <Element name="internships">
+        <FeaturedInternships />
+      </Element>
+      <Element name="for-companies">
+        <ForCompanies />
+      </Element>
+      <Element name="testimonials">
+        <Testimonials />
+      </Element>
       <FAQSection />
       <CTASection />
     </div>
