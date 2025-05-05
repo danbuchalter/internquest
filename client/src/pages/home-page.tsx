@@ -15,7 +15,7 @@ export default function HomePage() {
       <HowItWorks />
       <FeaturedInternships />
       <ForCompanies />
-      {/* Add the id="testimonials" to the Testimonials section */}
+      {/* Ensure that the id="testimonials" is on the section */}
       <div id="testimonials">
         <Testimonials />
       </div>
