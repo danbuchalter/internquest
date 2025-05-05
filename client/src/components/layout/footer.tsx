@@ -1,10 +1,9 @@
 import React from "react";
-import { Link as ScrollLink } from "react-scroll"; // React Scroll import
-import { 
-  Facebook, 
-  Twitter, 
-  Instagram, 
-  Linkedin 
+import {
+  Facebook,
+  Twitter,
+  Instagram,
+  Linkedin,
 } from "lucide-react";
 
 export default function Footer() {
@@ -39,14 +38,14 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">For Students</h3>
             <ul className="mt-4 space-y-4">
               <li>
-                <ScrollLink to="testimonials" smooth={true} duration={500} className="text-base text-gray-300 hover:text-white cursor-pointer">
+                <a href="#testimonials" className="text-base text-gray-300 hover:text-white">
                   Success Stories
-                </ScrollLink>
+                </a>
               </li>
               <li>
-                <ScrollLink to="internships" smooth={true} duration={500} className="text-base text-gray-300 hover:text-white cursor-pointer">
+                <a href="#internships" className="text-base text-gray-300 hover:text-white">
                   Browse Internships
-                </ScrollLink>
+                </a>
               </li>
               <li>
                 <a href="/auth" className="text-base text-gray-300 hover:text-white">
@@ -54,7 +53,9 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="/application-tips" className="text-base text-gray-300 hover:text-white">Application Tips</a>
+                <a href="/application-tips" className="text-base text-gray-300 hover:text-white">
+                  Application Tips
+                </a>
               </li>
             </ul>
           </div>
@@ -73,7 +74,9 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="/internship-guide" className="text-base text-gray-300 hover:text-white">Internship Guide</a>
+                <a href="/internship-guide" className="text-base text-gray-300 hover:text-white">
+                  Internship Guide
+                </a>
               </li>
               <li>
                 <a href="/#for-companies" className="text-base text-gray-300 hover:text-white">
@@ -87,16 +90,24 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">About</h3>
             <ul className="mt-4 space-y-4">
               <li>
-                <a href="/our-mission" className="text-base text-gray-300 hover:text-white">Our Mission</a>
+                <a href="/our-mission" className="text-base text-gray-300 hover:text-white">
+                  Our Mission
+                </a>
               </li>
               <li>
-                <a href="/privacy-policy" className="text-base text-gray-300 hover:text-white">Privacy Policy</a>
+                <a href="/privacy-policy" className="text-base text-gray-300 hover:text-white">
+                  Privacy Policy
+                </a>
               </li>
               <li>
-                <a href="/terms-of-service" className="text-base text-gray-300 hover:text-white">Terms of Service</a>
+                <a href="/terms-of-service" className="text-base text-gray-300 hover:text-white">
+                  Terms of Service
+                </a>
               </li>
               <li>
-                <a href="/contact-us" className="text-base text-gray-300 hover:text-white">Contact Us</a>
+                <a href="/contact-us" className="text-base text-gray-300 hover:text-white">
+                  Contact Us
+                </a>
               </li>
             </ul>
           </div>
