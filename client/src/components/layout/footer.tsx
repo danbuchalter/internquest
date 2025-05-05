@@ -39,12 +39,12 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">For Students</h3>
             <ul className="mt-4 space-y-4">
               <li>
-                <ScrollLink to="testimonials" smooth={true} className="text-base text-gray-300 hover:text-white cursor-pointer">
+                <ScrollLink to="testimonials" smooth={true} duration={500} className="text-base text-gray-300 hover:text-white cursor-pointer">
                   Success Stories
                 </ScrollLink>
               </li>
               <li>
-                <ScrollLink to="internships" smooth={true} className="text-base text-gray-300 hover:text-white cursor-pointer">
+                <ScrollLink to="internships" smooth={true} duration={500} className="text-base text-gray-300 hover:text-white cursor-pointer">
                   Browse Internships
                 </ScrollLink>
               </li>
