@@ -15,7 +15,10 @@ export default function HomePage() {
       <HowItWorks />
       <FeaturedInternships />
       <ForCompanies />
-      <Testimonials />
+      {/* Add the id="testimonials" to the Testimonials section */}
+      <div id="testimonials">
+        <Testimonials />
+      </div>
       <FAQSection />
       <CTASection />
     </div>
