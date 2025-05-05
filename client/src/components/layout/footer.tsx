@@ -1,10 +1,9 @@
-import React from "react"; // Required for React <17 or if tsconfig lacks "jsx": "react-jsx"
-import { Link } from "wouter";
-import { 
-  Facebook, 
-  Twitter, 
-  Instagram, 
-  Linkedin 
+import React from "react";
+import {
+  Facebook,
+  Twitter,
+  Instagram,
+  Linkedin,
 } from "lucide-react";
 
 export default function Footer() {
@@ -34,69 +33,81 @@ export default function Footer() {
               </a>
             </div>
           </div>
-          
+
           <div>
             <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">For Students</h3>
             <ul className="mt-4 space-y-4">
               <li>
-                <Link href="/internships" className="text-base text-gray-300 hover:text-white">
-                  Browse Internships
-                </Link>
-              </li>
-              <li>
-                <Link href="/auth" className="text-base text-gray-300 hover:text-white">
-                  Create Profile
-                </Link>
-              </li>
-              <li>
-                <Link href="/application-tips" className="text-base text-gray-300 hover:text-white">Application Tips</Link>
-              </li>
-              <li>
-                <Link href="/#testimonials" className="text-base text-gray-300 hover:text-white">
+                <a href="#testimonials" className="text-base text-gray-300 hover:text-white">
                   Success Stories
-                </Link>
+                </a>
+              </li>
+              <li>
+                <a href="#internships" className="text-base text-gray-300 hover:text-white">
+                  Browse Internships
+                </a>
+              </li>
+              <li>
+                <a href="/auth" className="text-base text-gray-300 hover:text-white">
+                  Create Profile
+                </a>
+              </li>
+              <li>
+                <a href="/application-tips" className="text-base text-gray-300 hover:text-white">
+                  Application Tips
+                </a>
               </li>
             </ul>
           </div>
-          
+
           <div>
             <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">For Companies</h3>
             <ul className="mt-4 space-y-4">
               <li>
-                <Link href="/post-internship" className="text-base text-gray-300 hover:text-white">
+                <a href="/post-internship" className="text-base text-gray-300 hover:text-white">
                   Post Internships
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="/company/dashboard" className="text-base text-gray-300 hover:text-white">
+                <a href="/company/dashboard" className="text-base text-gray-300 hover:text-white">
                   Company Dashboard
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="/internship-guide" className="text-base text-gray-300 hover:text-white">Internship Guide</Link>
+                <a href="/internship-guide" className="text-base text-gray-300 hover:text-white">
+                  Internship Guide
+                </a>
               </li>
               <li>
-                <Link href="/#for-companies" className="text-base text-gray-300 hover:text-white">
+                <a href="/#for-companies" className="text-base text-gray-300 hover:text-white">
                   Partner Benefits
-                </Link>
+                </a>
               </li>
             </ul>
           </div>
-          
+
           <div>
             <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">About</h3>
             <ul className="mt-4 space-y-4">
               <li>
-                <Link href="/our-mission" className="text-base text-gray-300 hover:text-white">Our Mission</Link>
+                <a href="/our-mission" className="text-base text-gray-300 hover:text-white">
+                  Our Mission
+                </a>
               </li>
               <li>
-                <Link href="/privacy-policy" className="text-base text-gray-300 hover:text-white">Privacy Policy</Link>
+                <a href="/privacy-policy" className="text-base text-gray-300 hover:text-white">
+                  Privacy Policy
+                </a>
               </li>
               <li>
-                <Link href="/terms-of-service" className="text-base text-gray-300 hover:text-white">Terms of Service</Link>
+                <a href="/terms-of-service" className="text-base text-gray-300 hover:text-white">
+                  Terms of Service
+                </a>
               </li>
               <li>
-                <Link href="/contact-us" className="text-base text-gray-300 hover:text-white">Contact Us</Link>
+                <a href="/contact-us" className="text-base text-gray-300 hover:text-white">
+                  Contact Us
+                </a>
               </li>
             </ul>
           </div>
