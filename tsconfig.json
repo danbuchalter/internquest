@@ -14,15 +14,15 @@
     "module": "esnext",
     "strict": true,
     "lib": ["esnext", "dom", "dom.iterable"],
-    "jsx": "preserve",
+    "jsx": "react-jsx",                             // ✅ Enables JSX with React 17+ transform
     "esModuleInterop": true,
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "baseUrl": ".",
-    "types": ["node", "vite/client"],  // This line ensures Node.js types are included
-    "typeRoots": ["./node_modules/@types", "./types"],  // Make sure Node types are found here
+    "types": ["node", "vite/client", "react", "react-dom"],  // ✅ Add react typings explicitly
+    "typeRoots": ["./node_modules/@types", "./types"],       // ✅ Good, no changes needed
     "paths": {
       "@/*": ["client/src/*"],
       "@shared/*": ["shared/*"]
