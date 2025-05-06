@@ -69,7 +69,7 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="/company/dashboard" className="text-base text-gray-300 hover:text-white">
+                <a href="/company-dashboard" className="text-base text-gray-300 hover:text-white">
                   Company Dashboard
                 </a>
               </li>
