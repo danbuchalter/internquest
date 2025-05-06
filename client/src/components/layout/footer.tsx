@@ -19,16 +19,16 @@ export default function Footer() {
               Connecting South African youth with career-building opportunities.
             </p>
             <div className="mt-4 flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white">
+              <a href="/" className="text-gray-400 hover:text-white">
                 <Facebook size={20} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white">
+              <a href="/" className="text-gray-400 hover:text-white">
                 <Twitter size={20} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white">
+              <a href="/" className="text-gray-400 hover:text-white">
                 <Instagram size={20} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white">
+              <a href="/" className="text-gray-400 hover:text-white">
                 <Linkedin size={20} />
               </a>
             </div>
@@ -38,12 +38,12 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">For Students</h3>
             <ul className="mt-4 space-y-4">
               <li>
-                <a href="#testimonials" className="text-base text-gray-300 hover:text-white">
+                <a href="/#testimonials" className="text-base text-gray-300 hover:text-white">
                   Success Stories
                 </a>
               </li>
               <li>
-                <a href="#internships" className="text-base text-gray-300 hover:text-white">
+                <a href="/internships" className="text-base text-gray-300 hover:text-white">
                   Browse Internships
                 </a>
               </li>
@@ -79,7 +79,7 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="/#for-companies" className="text-base text-gray-300 hover:text-white">
+                <a href="/partner-benefits" className="text-base text-gray-300 hover:text-white">
                   Partner Benefits
                 </a>
               </li>
