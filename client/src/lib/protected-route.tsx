@@ -1,87 +1,53 @@
 import { useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
-import { Redirect, Route } from "wouter";
+import { Navigate } from "react-router-dom";
 
 interface ProtectedRouteProps {
-  path: string;
-  component: React.ComponentType<any>;
+  children: React.ReactNode;
   requiredRole?: "intern" | "company";
-  children?: (params: Record<string, string>) => React.ReactNode;
 }
 
 export function ProtectedRoute({
-  path,
-  component: Component,
-  requiredRole,
   children,
+  requiredRole,
 }: ProtectedRouteProps) {
   let auth;
-  
+
   try {
     auth = useAuth();
   } catch (error) {
     console.error("Auth context error:", error);
-    // Fallback render for development
     return (
-      <Route path={path}>
-        {children ? 
-          (params) => children(Object.fromEntries(
-            Object.entries(params).filter(([_, v]) => v !== undefined)
-          ) as Record<string, string>) : 
-          <Component />
-        }
-      </Route>
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
     );
   }
-  
+
   const { user, isLoading } = auth;
 
+  // Loading state
   if (isLoading) {
     return (
-      <Route path={path}>
-        <div className="flex items-center justify-center min-h-screen">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
-      </Route>
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
     );
   }
 
   // If no user, redirect to auth page
   if (!user) {
-    return (
-      <Route path={path}>
-        <Redirect to="/auth" />
-      </Route>
-    );
+    return <Navigate to="/auth" replace />;
   }
 
   // If a specific role is required and user doesn't have that role
   if (requiredRole && user.role !== requiredRole) {
-    // Redirect to appropriate dashboard
     const redirectPath = user.role === 'intern' 
       ? '/intern/dashboard' 
       : '/company/dashboard';
-      
-    return (
-      <Route path={path}>
-        <Redirect to={redirectPath} />
-      </Route>
-    );
+    return <Navigate to={redirectPath} replace />;
   }
 
-  if (children) {
-    return (
-      <Route path={path}>
-        {(params) => children(Object.fromEntries(
-          Object.entries(params).filter(([_, v]) => v !== undefined)
-        ) as Record<string, string>)}
-      </Route>
-    );
-  }
-
-  return (
-    <Route path={path}>
-      <Component />
-    </Route>
-  );
+  // Render the protected content
+  return <>{children}</>;
 }

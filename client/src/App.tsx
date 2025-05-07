@@ -1,4 +1,4 @@
-import { Switch, Route, Redirect, useLocation } from "wouter";
+import { Routes, Route, useLocation } from "react-router-dom";
 import NotFound from "@/pages/not-found";
 import HomePage from "@/pages/home-page";
 import AuthPage from "@/pages/auth-page";
@@ -23,13 +23,15 @@ import PartnerBenefits from "@/pages/PartnerBenefits";
 import TermsOfService from "@/pages/TermsOfService";
 import ContactUs from "@/pages/ContactUs";
 
+// ✅ New dashboard redirect component
+import DashboardRedirect from "@/pages/DashboardRedirect";
+
 function Router() {
-  const [location] = useLocation();
-  const isAuthPage = location.includes("/auth") || location.includes("/register");
+  const location = useLocation();
+  const isAuthPage = location.pathname.includes("/auth") || location.pathname.includes("/register");
 
   return (
     <div className="flex flex-col min-h-screen w-full">
-      {/* ✅ Tailwind test block (optional, remove if not needed) */}
       <div className="hidden p-4 bg-primary text-white">
         Tailwind CSS is working!
       </div>
@@ -37,83 +39,56 @@ function Router() {
       {!isAuthPage && <Navbar />}
 
       <div className="flex-grow w-full">
-        <Switch>
+        <Routes>
           {/* Core routes */}
-          <Route path="/" component={HomePage} />
-          <Route path="/register" component={UserTypeSelection} />
-          <Route path="/auth" component={AuthPage} />
-          <Route path="/internships" component={InternshipList} />
-          <Route path="/internships/:id">
-            {(params: { id: string }) => <InternshipDetail id={params.id} />}
-          </Route>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/register" element={<UserTypeSelection />} />
+          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/internships" element={<InternshipList />} />
+          <Route path="/internships/:id" element={<InternshipDetail id={""} />} />
 
           {/* Informational Pages */}
-          <Route path="/application-tips" component={ApplicationTips} />
-          <Route path="/internship-guide" component={InternshipGuide} />
-          <Route path="/our-mission" component={OurMission} />
-          <Route path="/privacy-policy" component={PrivacyPolicy} />
-          <Route path="/partner-benefits" component={PartnerBenefits} />
-          <Route path="/terms-of-service" component={TermsOfService} />
-          <Route path="/contact-us" component={ContactUs} />
+          <Route path="/application-tips" element={<ApplicationTips />} />
+          <Route path="/internship-guide" element={<InternshipGuide />} />
+          <Route path="/our-mission" element={<OurMission />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/partner-benefits" element={<PartnerBenefits />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route path="/contact-us" element={<ContactUs />} />
 
           {/* Intern Routes */}
-          <ProtectedRoute
-            path="/intern/dashboard"
-            component={StudentDashboard}
-            requiredRole="intern"
-          />
-          <ProtectedRoute
-            path="/saved-internships"
-            component={SavedInternships}
-            requiredRole="intern"
-          />
+          <Route path="/intern/dashboard" element={
+            <ProtectedRoute requiredRole="intern">
+              <StudentDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/saved-internships" element={
+            <ProtectedRoute requiredRole="intern">
+              <SavedInternships />
+            </ProtectedRoute>
+          } />
 
           {/* Company Routes */}
-          <ProtectedRoute
-            path="/company/dashboard"
-            component={CompanyDashboard}
-            requiredRole="company"
-          />
-          <ProtectedRoute
-            path="/post-internship"
-            component={PostInternship}
-            requiredRole="company"
-          />
+          <Route path="/company/dashboard" element={
+            <ProtectedRoute requiredRole="company">
+              <CompanyDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/post-internship" element={
+            <ProtectedRoute requiredRole="company">
+              <PostInternship />
+            </ProtectedRoute>
+          } />
 
           {/* Company Application Viewer */}
-          <Route path="/applications/:id">
-            {(params: { id: string }) => (
-              <ProtectedRoute
-                path="/applications/:id"
-                component={() => <ApplicationsView id={params.id} />}
-                requiredRole="company"
-              />
-            )}
-          </Route>
+          <Route path="/applications/:id" element={<ApplicationsView id={""} />} />
 
-          {/* Dynamic Dashboard Redirect */}
-          <ProtectedRoute
-            path="/dashboard"
-            component={() => {
-              try {
-                const { user } = require("@/hooks/use-auth").useAuth();
-                if (user?.role === "intern") {
-                  window.location.href = "/intern/dashboard";
-                } else if (user?.role === "company") {
-                  window.location.href = "/company/dashboard";
-                }
-                return <div style={{ display: "none" }} />;
-              } catch (error) {
-                console.error("Error in dashboard redirect:", error);
-                window.location.href = "/auth";
-                return <div style={{ display: "none" }} />;
-              }
-            }}
-          />
+          {/* Dashboard redirect */}
+          <Route path="/dashboard" element={<DashboardRedirect />} />
 
           {/* Fallback */}
-          <Route component={NotFound} />
-        </Switch>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </div>
 
       <Footer />
