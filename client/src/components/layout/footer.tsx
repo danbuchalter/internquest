@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 export default function Footer() {
   const navigate = useNavigate();
 
-  const handleNav = (path: string) => () => navigate(path, { replace: true });
+  const handleNav = (path: string) => () => navigate(path); // ✅ Removed replace: true
 
   return (
     <footer className="bg-gray-900">
