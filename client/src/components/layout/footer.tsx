@@ -5,8 +5,13 @@ import {
   Instagram,
   Linkedin,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Footer() {
+  const navigate = useNavigate();
+
+  const handleNav = (path: string) => () => navigate(path, { replace: true });
+
   return (
     <footer className="bg-gray-900">
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -38,24 +43,24 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">For Students</h3>
             <ul className="mt-4 space-y-4">
               <li>
-                <a href="/#testimonials" className="text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("/#testimonials")} className="text-left text-base text-gray-300 hover:text-white">
                   Success Stories
-                </a>
+                </button>
               </li>
               <li>
-                <a href="/internships" className="text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("/internships")} className="text-left text-base text-gray-300 hover:text-white">
                   Browse Internships
-                </a>
+                </button>
               </li>
               <li>
-                <a href="/auth" className="text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("/auth")} className="text-left text-base text-gray-300 hover:text-white">
                   Create Profile
-                </a>
+                </button>
               </li>
               <li>
-                <a href="/application-tips" className="text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("/application-tips")} className="text-left text-base text-gray-300 hover:text-white">
                   Application Tips
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -64,24 +69,24 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">For Companies</h3>
             <ul className="mt-4 space-y-4">
               <li>
-                <a href="/post-internship" className="text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("/post-internship")} className="text-left text-base text-gray-300 hover:text-white">
                   Post Internships
-                </a>
+                </button>
               </li>
               <li>
-                <a href="/company-dashboard" className="text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("/company-dashboard")} className="text-left text-base text-gray-300 hover:text-white">
                   Company Dashboard
-                </a>
+                </button>
               </li>
               <li>
-                <a href="/internship-guide" className="text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("/internship-guide")} className="text-left text-base text-gray-300 hover:text-white">
                   Internship Guide
-                </a>
+                </button>
               </li>
               <li>
-                <a href="/partner-benefits" className="text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("/partner-benefits")} className="text-left text-base text-gray-300 hover:text-white">
                   Partner Benefits
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -90,24 +95,24 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">About</h3>
             <ul className="mt-4 space-y-4">
               <li>
-                <a href="/our-mission" className="text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("/our-mission")} className="text-left text-base text-gray-300 hover:text-white">
                   Our Mission
-                </a>
+                </button>
               </li>
               <li>
-                <a href="/privacy-policy" className="text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("/privacy-policy")} className="text-left text-base text-gray-300 hover:text-white">
                   Privacy Policy
-                </a>
+                </button>
               </li>
               <li>
-                <a href="/terms-of-service" className="text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("/terms-of-service")} className="text-left text-base text-gray-300 hover:text-white">
                   Terms of Service
-                </a>
+                </button>
               </li>
               <li>
-                <a href="/contact-us" className="text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("/contact-us")} className="text-left text-base text-gray-300 hover:text-white">
                   Contact Us
-                </a>
+                </button>
               </li>
             </ul>
           </div>
