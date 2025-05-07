@@ -6,15 +6,11 @@ import { Button } from "@/components/ui/button";
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [location] = useLocation();
-  
-  const isActive = (path: string) => {
-    return location === path;
-  };
-  
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
-  
+
+  const isActive = (path: string) => location === path;
+
+  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
+
   const scrollToSection = (id: string, event: React.MouseEvent) => {
     event.preventDefault();
     const element = document.getElementById(id);
@@ -23,7 +19,7 @@ export default function Navbar() {
       setMobileMenuOpen(false);
     }
   };
-  
+
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -40,34 +36,39 @@ export default function Navbar() {
               <Link href="/internships" className={`px-3 py-2 text-sm font-medium ${isActive("/internships") ? "text-primary" : "text-gray-700 hover:text-primary"} transition`}>
                 Internships
               </Link>
-              <a href="#for-companies" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition cursor-pointer" onClick={(e) => scrollToSection('for-companies', e)}>
+              <a
+                href="#for-companies"
+                className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition cursor-pointer"
+                onClick={(e) => scrollToSection("for-companies", e)}
+              >
                 For Companies
               </a>
-              <a href="#how-it-works" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition cursor-pointer" onClick={(e) => scrollToSection('how-it-works', e)}>
+              <a
+                href="#how-it-works"
+                className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary transition cursor-pointer"
+                onClick={(e) => scrollToSection("how-it-works", e)}
+              >
                 How It Works
               </a>
             </div>
           </div>
-          
+
           {/* Ensure both Log In and Sign Up buttons are visible */}
           <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-3">
-            {/* Log In Button */}
-            <Link 
-              href="/auth?tab=login" 
+            <Link
+              href="/auth?tab=login"
               className="px-4 py-2 text-sm font-medium rounded-md text-primary hover:bg-primary-50 transition"
             >
               Log In
             </Link>
-            
-            {/* Sign Up Button */}
-            <Link 
-              href="/register" 
+            <Link
+              href="/register"
               className="px-4 py-2 text-sm font-medium rounded-md bg-blue-500 text-white hover:bg-blue-700 transition"
             >
               Sign Up
             </Link>
           </div>
-          
+
           <div className="-mr-2 flex items-center sm:hidden">
             <Button
               variant="ghost"
@@ -82,31 +83,48 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-      
+
       {/* Mobile menu */}
       {mobileMenuOpen && (
         <div className="sm:hidden">
           <div className="pt-2 pb-3 space-y-1">
-            <Link href="/internships" className={`block px-3 py-2 text-base font-medium ${isActive("/internships") ? "text-primary bg-primary-50" : "text-gray-700 hover:bg-gray-50 hover:text-primary"}`}>
+            <Link
+              href="/internships"
+              className={`block px-3 py-2 text-base font-medium ${isActive("/internships") ? "text-primary bg-primary-50" : "text-gray-700 hover:bg-gray-50 hover:text-primary"}`}
+            >
               Internships
             </Link>
-            <a href="#for-companies" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-primary" onClick={(e) => scrollToSection('for-companies', e)}>
+            <a
+              href="#for-companies"
+              className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-primary"
+              onClick={(e) => scrollToSection("for-companies", e)}
+            >
               For Companies
             </a>
-            <a href="#how-it-works" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-primary" onClick={(e) => scrollToSection('how-it-works', e)}>
+            <a
+              href="#how-it-works"
+              className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-primary"
+              onClick={(e) => scrollToSection("how-it-works", e)}
+            >
               How It Works
             </a>
           </div>
-          
+
           <div className="pt-4 pb-3 border-t border-gray-200">
             <div className="flex items-center px-4 space-x-3">
               {/* Log In Button (Mobile) */}
-              <Link href="/auth?tab=login" className="block px-4 py-2 w-full text-center text-sm font-medium rounded-md text-primary hover:bg-primary-50 transition">
+              <Link
+                href="/auth?tab=login"
+                className="block px-4 py-2 w-full text-center text-sm font-medium rounded-md text-primary hover:bg-primary-50 transition"
+              >
                 Log In
               </Link>
-              
+
               {/* Sign Up Button (Mobile) */}
-              <Link href="/register" className="block px-4 py-2 w-full text-center text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 transition">
+              <Link
+                href="/register"
+                className="block px-4 py-2 w-full text-center text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 transition"
+              >
                 Sign Up
               </Link>
             </div>
