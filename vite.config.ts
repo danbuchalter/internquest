@@ -14,15 +14,16 @@ export default defineConfig({
   plugins: [
     react(),
   ],
-  root: 'client',  // Ensure Vite serves from the client folder
+  // Adjusted root directory configuration (if 'client' folder is not required)
+  root: __dirname,  // Use the root directory where your frontend code resides
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'client/src'),  // Ensure path is resolved correctly
-      '@shared': path.resolve(__dirname, 'shared'),  // Shared directory path
+      '@': path.resolve(__dirname, 'src'), // Make sure your src folder is here
+      '@shared': path.resolve(__dirname, 'shared'),  // Shared directory path, remove if not used
     },
   },
   server: {
-    port: 3000,  // Customize port if necessary
+    port: 3000,  // Port for the dev server
   },
   build: {
     target: 'esnext',  // Modern JavaScript output
