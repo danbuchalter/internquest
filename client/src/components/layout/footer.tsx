@@ -1,23 +1,12 @@
 import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { scroller } from "react-scroll";
 
 export default function Footer() {
   const navigate = useNavigate();
 
   const handleNav = (path: string) => () => {
-    // Always navigate to the homepage
-    navigate("/", { replace: true });
-
-    // Scroll to the section on the homepage after navigation
-    useEffect(() => {
-      scroller.scrollTo(path, {
-        smooth: true,
-        offset: -50, // Adjust this value if needed
-        duration: 500,
-      });
-    }, []);
+    // Navigate to the homepage and set the hash in the URL for scrolling
+    navigate(`/?${path}`, { replace: true });
   };
 
   return (
