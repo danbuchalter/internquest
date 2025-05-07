@@ -8,12 +8,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export default defineConfig({
-  root: resolve(__dirname, 'client'), // ✅ Point Vite to client/
+  root: resolve(__dirname, 'client'),
   plugins: [react()],
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'client/src'), // ✅ Points to client/src
-      '@shared': resolve(__dirname, 'client/shared'), // Optional, remove if unused
+      '@': resolve(__dirname, 'client/src'),
+      '@shared': resolve(__dirname, 'shared'), // ✅ FIXED: now correctly points to root/shared/
     },
   },
   server: {
@@ -22,6 +22,6 @@ export default defineConfig({
   build: {
     target: 'esnext',
     sourcemap: true,
-    outDir: resolve(__dirname, 'dist'), // Optional: where final files go
+    outDir: resolve(__dirname, 'dist'),
   },
 });
