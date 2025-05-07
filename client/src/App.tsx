@@ -45,6 +45,8 @@ function Router() {
           <Route path="/register" element={<UserTypeSelection />} />
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/internships" element={<InternshipList />} />
+          
+          {/* Dynamic route for InternshipDetail */}
           <Route path="/internships/:id" element={<InternshipDetail id={""} />} />
 
           {/* Informational Pages */}
@@ -80,7 +82,7 @@ function Router() {
             </ProtectedRoute>
           } />
 
-          {/* Company Application Viewer */}
+          {/* Dynamic route for ApplicationsView */}
           <Route path="/applications/:id" element={<ApplicationsView id={""} />} />
 
           {/* Dashboard redirect */}
