@@ -1,10 +1,24 @@
 import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { scroller } from "react-scroll";
 
 export default function Footer() {
   const navigate = useNavigate();
 
-  const handleNav = (path: string) => () => navigate(path); // ✅ Removed replace: true
+  const handleNav = (path: string) => () => {
+    // Always navigate to the homepage
+    navigate("/", { replace: true });
+
+    // Scroll to the section on the homepage after navigation
+    useEffect(() => {
+      scroller.scrollTo(path, {
+        smooth: true,
+        offset: -50, // Adjust this value if needed
+        duration: 500,
+      });
+    }, []);
+  };
 
   return (
     <footer className="bg-gray-900">
@@ -37,22 +51,22 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">For Students</h3>
             <ul className="mt-4 space-y-4">
               <li>
-                <button onClick={handleNav("/#testimonials")} className="text-left text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("testimonials")} className="text-left text-base text-gray-300 hover:text-white">
                   Success Stories
                 </button>
               </li>
               <li>
-                <button onClick={handleNav("/internships")} className="text-left text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("internships")} className="text-left text-base text-gray-300 hover:text-white">
                   Browse Internships
                 </button>
               </li>
               <li>
-                <button onClick={handleNav("/auth")} className="text-left text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("auth")} className="text-left text-base text-gray-300 hover:text-white">
                   Create Profile
                 </button>
               </li>
               <li>
-                <button onClick={handleNav("/application-tips")} className="text-left text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("application-tips")} className="text-left text-base text-gray-300 hover:text-white">
                   Application Tips
                 </button>
               </li>
@@ -63,22 +77,22 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">For Companies</h3>
             <ul className="mt-4 space-y-4">
               <li>
-                <button onClick={handleNav("/post-internship")} className="text-left text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("post-internship")} className="text-left text-base text-gray-300 hover:text-white">
                   Post Internships
                 </button>
               </li>
               <li>
-                <button onClick={handleNav("/company-dashboard")} className="text-left text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("company-dashboard")} className="text-left text-base text-gray-300 hover:text-white">
                   Company Dashboard
                 </button>
               </li>
               <li>
-                <button onClick={handleNav("/internship-guide")} className="text-left text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("internship-guide")} className="text-left text-base text-gray-300 hover:text-white">
                   Internship Guide
                 </button>
               </li>
               <li>
-                <button onClick={handleNav("/partner-benefits")} className="text-left text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("partner-benefits")} className="text-left text-base text-gray-300 hover:text-white">
                   Partner Benefits
                 </button>
               </li>
@@ -89,22 +103,22 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">About</h3>
             <ul className="mt-4 space-y-4">
               <li>
-                <button onClick={handleNav("/our-mission")} className="text-left text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("our-mission")} className="text-left text-base text-gray-300 hover:text-white">
                   Our Mission
                 </button>
               </li>
               <li>
-                <button onClick={handleNav("/privacy-policy")} className="text-left text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("privacy-policy")} className="text-left text-base text-gray-300 hover:text-white">
                   Privacy Policy
                 </button>
               </li>
               <li>
-                <button onClick={handleNav("/terms-of-service")} className="text-left text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("terms-of-service")} className="text-left text-base text-gray-300 hover:text-white">
                   Terms of Service
                 </button>
               </li>
               <li>
-                <button onClick={handleNav("/contact-us")} className="text-left text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("contact-us")} className="text-left text-base text-gray-300 hover:text-white">
                   Contact Us
                 </button>
               </li>
