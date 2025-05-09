@@ -1,5 +1,5 @@
 import { Button, Input } from '@/components/ui';
-import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/Tabs";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";

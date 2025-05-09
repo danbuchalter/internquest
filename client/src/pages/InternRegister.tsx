@@ -1,16 +1,33 @@
-import { Button, Input, Loader2 } from 'components/ui';
+import { Button, Input } from '@/components/ui';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { useMutation } from 'react-query';
-import { Tabs, TabsContent } from 'components/ui/Tabs';
+import { useMutation } from '@tanstack/react-query';
+import { Tabs, TabsContent } from '@/components/ui/Tabs';
 
 const InternRegister = () => {
   const [activeTab, setActiveTab] = useState('register');
   const internRegForm = useForm();
-  const registerInternMutation = useMutation(/* Mutation function to register intern */);
+
+  const registerInternMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await fetch('/api/interns/register', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to register intern');
+      }
+
+      return response.json();
+    },
+  });
 
   const onInternRegisterSubmit = (data: any) => {
-    // Handle intern registration logic here
+    registerInternMutation.mutate(data);
   };
 
   return (
@@ -29,7 +46,7 @@ const InternRegister = () => {
               <Input 
                 type="file" 
                 accept="image/*"
-                onChange={(e: { target: { files: any[]; }; }) => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   const file = e.target.files?.[0];
                   if (file) {
                     internRegForm.setValue("profilePicture", file);
@@ -44,7 +61,7 @@ const InternRegister = () => {
               <Input 
                 type="file" 
                 accept=".pdf,.doc,.docx"
-                onChange={(e: { target: { files: any[]; }; }) => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   const file = e.target.files?.[0];
                   if (file) {
                     internRegForm.setValue("cvFile", file);
@@ -60,7 +77,7 @@ const InternRegister = () => {
             >
               {registerInternMutation.isPending ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <span className="mr-2 h-4 w-4 animate-spin border-2 border-t-transparent border-white rounded-full inline-block"></span>
                   Creating account...
                 </>
               ) : (

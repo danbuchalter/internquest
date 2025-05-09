@@ -31,7 +31,7 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/components/ui/tabs";
+} from "@/components/ui/Tabs";
 
 interface ApplicationsViewProps {
   id: string;
