@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom"; // Use react-router-dom Link
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

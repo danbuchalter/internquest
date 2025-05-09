@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { Loader2, BookOpen, UserCheck, Clock, Calendar, Award, ThumbsUp, Search } from "lucide-react";
 import { Application, Internship } from "@shared/schema";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/badge";
 
 export default function StudentDashboard() {
