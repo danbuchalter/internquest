@@ -5,8 +5,15 @@ export default function Footer() {
   const navigate = useNavigate();
 
   const handleNav = (path: string) => () => {
-    // Navigate directly to the target path
-    navigate(`/${path}`);
+    if (path === "testimonials") {
+      navigate("/", { replace: false });
+      setTimeout(() => {
+        const el = document.getElementById("testimonials");
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    } else {
+      navigate(`/${path}`);
+    }
   };
 
   return (
