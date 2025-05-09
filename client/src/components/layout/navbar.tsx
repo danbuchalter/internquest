@@ -1,13 +1,13 @@
-import { Link, useLocation } from "wouter";
+import { Link, useLocation } from "react-router-dom"; // Use react-router-dom Link
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [location] = useLocation();
+  const location = useLocation();
 
-  const isActive = (path: string) => location === path;
+  const isActive = (path: string) => location.pathname === path;
 
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
 
@@ -28,7 +28,7 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <Link href="/">
+              <Link to="/">
                 <span className="font-bold text-2xl text-primary">
                   Intern<span className="text-amber-500">Quest</span>
                 </span>
@@ -61,13 +61,13 @@ export default function Navbar() {
 
           <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-3">
             <Link
-              href="/auth?tab=login"
+              to="/auth?tab=login" // Use 'to' prop from react-router-dom
               className="px-4 py-2 text-sm font-medium rounded-md text-primary hover:bg-primary-50 transition"
             >
               Log In
             </Link>
             <Link
-              href="/register"
+              to="/register" // Use 'to' prop from react-router-dom
               className="px-4 py-2 text-sm font-medium rounded-md bg-blue-500 text-white hover:bg-blue-700 transition"
             >
               Sign Up
@@ -118,13 +118,13 @@ export default function Navbar() {
           <div className="pt-4 pb-3 border-t border-gray-200">
             <div className="flex items-center px-4 space-x-3">
               <Link
-                href="/auth?tab=login"
+                to="/auth?tab=login" // Use 'to' prop from react-router-dom
                 className="block px-4 py-2 w-full text-center text-sm font-medium rounded-md text-primary hover:bg-primary-50 transition"
               >
                 Log In
               </Link>
               <Link
-                href="/register"
+                to="/register" // Use 'to' prop from react-router-dom
                 className="block px-4 py-2 w-full text-center text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 transition"
               >
                 Sign Up
