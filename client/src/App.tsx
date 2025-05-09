@@ -25,6 +25,8 @@ import ContactUs from "@/pages/ContactUs";
 
 // ✅ New dashboard redirect component
 import DashboardRedirect from "@/pages/DashboardRedirect";
+import InternRegister from "@/pages/auth-page"; // Make sure this page is created
+import CompanyRegister from "@/pages/auth-page"; // Make sure this page is created
 
 function Router() {
   const location = useLocation();
@@ -45,7 +47,7 @@ function Router() {
           <Route path="/register" element={<UserTypeSelection />} />
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/internships" element={<InternshipList />} />
-          
+
           {/* Dynamic route for InternshipDetail */}
           <Route path="/internships/:id" element={<InternshipDetail id={""} />} />
 
@@ -81,6 +83,10 @@ function Router() {
               <PostInternship />
             </ProtectedRoute>
           } />
+
+          {/* Registration Pages */}
+          <Route path="/register/intern" element={<InternRegister />} />
+          <Route path="/register/company" element={<CompanyRegister />} />
 
           {/* Dynamic route for ApplicationsView */}
           <Route path="/applications/:id" element={<ApplicationsView id={""} />} />

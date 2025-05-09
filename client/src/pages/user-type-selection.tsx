@@ -1,13 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useLocation } from "wouter";
+import { useNavigate } from "react-router-dom"; // Use this instead of wouter's useLocation
 import { Building2, GraduationCap } from "lucide-react";
 
 export default function UserTypeSelection() {
-  const [_, navigate] = useLocation();
+  const navigate = useNavigate(); // Correct way to navigate using react-router-dom
 
   const handleUserTypeSelection = (type: 'intern' | 'company') => {
-    navigate(`/auth?type=${type}`);
+    navigate(`/auth?type=${type}`); // Correctly navigating to the auth page with the query string
   };
 
   return (
@@ -119,12 +119,7 @@ export default function UserTypeSelection() {
         <div className="text-center mt-10">
           <p className="text-gray-600">
             Already have an account?{" "}
-            <a
-              href="/auth?tab=login"
-              className="text-primary hover:underline font-medium"
-            >
-              Sign in here
-            </a>
+            <a href="/login" className="text-blue-500 hover:underline">Login here</a>
           </p>
         </div>
       </div>
