@@ -5,8 +5,8 @@ export default function Footer() {
   const navigate = useNavigate();
 
   const handleNav = (path: string) => () => {
-    // Navigate to the homepage and set the hash in the URL for scrolling
-    navigate(`/?${path}`, { replace: true });
+    // Navigate directly to the target path
+    navigate(`/${path}`);
   };
 
   return (
@@ -71,7 +71,7 @@ export default function Footer() {
                 </button>
               </li>
               <li>
-                <button onClick={handleNav("company-dashboard")} className="text-left text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("company/dashboard")} className="text-left text-base text-gray-300 hover:text-white">
                   Company Dashboard
                 </button>
               </li>
