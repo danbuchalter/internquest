@@ -25,8 +25,8 @@ import ContactUs from "@/pages/ContactUs";
 
 // ✅ New dashboard redirect component
 import DashboardRedirect from "@/pages/DashboardRedirect";
-import InternRegister from "@/pages/auth-page"; // Make sure this page is created
-import CompanyRegister from "@/pages/auth-page"; // Make sure this page is created
+import InternRegister from "@/pages/InternRegister"; 
+import CompanyRegister from "@/pages/CompanyRegister";
 
 function Router() {
   const location = useLocation();

@@ -12,8 +12,8 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'client/src'), // ✅ Points to client/src
-      '@shared': resolve(__dirname, 'shared'), // ✅ FIXED: Points to root/shared
+      '@': resolve(__dirname, 'client/src'), // ✅ Allows imports like '@/components/ui'
+      '@shared': resolve(__dirname, 'shared'), // ✅ Allows imports like '@shared/interfaces'
     },
   },
   server: {
@@ -22,6 +22,6 @@ export default defineConfig({
   build: {
     target: 'esnext',
     sourcemap: true,
-    outDir: resolve(__dirname, 'dist'), // Optional: where final files go
+    outDir: resolve(__dirname, 'dist'),
   },
 });

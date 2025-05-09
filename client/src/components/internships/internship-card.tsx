@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { Bookmark, MapPin, Calendar, DollarSign } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { Internship } from "@shared/schema";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
