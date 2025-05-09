@@ -142,7 +142,7 @@ export function setupAuth(app: Express) {
 
       req.login(user, (err) => {
         if (err) return next(err);
-        res.status(201).json(user);
+        res.redirect('/');  // Redirect to home page after successful registration
       });
     } catch (error) {
       next(error);
@@ -213,7 +213,7 @@ export function setupAuth(app: Express) {
         ]);
       req.login(user, (err) => {
         if (err) return next(err);
-        res.status(201).json(user);
+        res.redirect('/');  // Redirect to home page after successful registration
       });
     } catch (error) {
       next(error);
@@ -222,7 +222,7 @@ export function setupAuth(app: Express) {
 
   // Login route
   app.post("/api/login", passport.authenticate("local"), (req, res) => {
-    res.status(200).json(req.user);
+    res.redirect('/');  // Redirect to home page after successful login
   });
 
   // Logout route
