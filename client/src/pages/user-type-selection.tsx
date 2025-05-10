@@ -7,7 +7,11 @@ export default function UserTypeSelection() {
   const navigate = useNavigate(); // Correct way to navigate using react-router-dom
 
   const handleUserTypeSelection = (type: 'intern' | 'company') => {
-    navigate(`/auth?type=${type}`); // Correctly navigating to the auth page with the query string
+    if (type === 'intern') {
+      navigate('/intern-register'); // Navigate to the Intern Register page
+    } else if (type === 'company') {
+      navigate('/company-register'); // Navigate to the Company Register page
+    }
   };
 
   return (

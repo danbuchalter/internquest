@@ -25,7 +25,7 @@ import ContactUs from "@/pages/ContactUs";
 
 // ✅ New dashboard redirect component
 import DashboardRedirect from "@/pages/DashboardRedirect";
-import InternRegister from "@/pages/InternRegister"; 
+import InternRegister from "@/pages/InternRegister";
 import CompanyRegister from "@/pages/CompanyRegister";
 
 function Router() {
