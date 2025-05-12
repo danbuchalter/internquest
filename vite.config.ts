@@ -8,12 +8,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export default defineConfig({
-  root: resolve(__dirname, 'client'), // ✅ Point Vite to client/
+  root: resolve(__dirname, 'client'), // ✅ Root stays in client/
   plugins: [react()],
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'client/src'), // ✅ Allows imports like '@/components/ui'
-      '@shared': resolve(__dirname, 'shared'), // ✅ Allows imports like '@shared/interfaces'
+      '@': resolve(__dirname, 'client/src'), // ✅ Shortcuts
+      '@shared': resolve(__dirname, 'shared'),
     },
   },
   server: {
@@ -22,6 +22,7 @@ export default defineConfig({
   build: {
     target: 'esnext',
     sourcemap: true,
-    outDir: resolve(__dirname, 'dist'),
+    outDir: resolve(__dirname, 'client/dist'), // ✅ Ensures Vite builds to the correct folder
+    emptyOutDir: true, // ✅ Optional: cleans the dist folder before building
   },
 });

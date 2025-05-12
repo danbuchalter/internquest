@@ -1,3 +1,4 @@
+// vite.ts
 import express, { type Express } from "express";
 import fs from "fs";
 import path from "path";
@@ -74,7 +75,7 @@ export async function setupVite(app: Express, server: Server) {
 
 // serveStatic is ONLY used in production after build
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(import.meta.dirname, "..", "client", "dist"); // ✅ ensure this points to client build
+  const distPath = path.resolve(import.meta.dirname, "..", "client", "dist");
 
   if (!fs.existsSync(distPath)) {
     throw new Error(
@@ -82,11 +83,11 @@ export function serveStatic(app: Express) {
     );
   }
 
-  // Serve static assets
+  // ✅ Serve static assets
   app.use(express.static(distPath));
 
-  // SPA Fallback: serve index.html for any unknown routes
-  app.use("*", (_req, res) => {
+  // ✅ SPA fallback: serve index.html for unknown routes
+  app.get("*", (_req, res) => {
     res.sendFile(path.join(distPath, "index.html"));
   });
 }
