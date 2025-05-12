@@ -49,7 +49,7 @@ export async function setupVite(app: Express, server: Server) {
         import.meta.dirname,
         "..",
         "client",
-        "index.html",
+        "index.html"
       );
 
       // Always reload index.html fresh from disk
@@ -58,7 +58,7 @@ export async function setupVite(app: Express, server: Server) {
       // Add cache-busting to main.tsx
       template = template.replace(
         `src="/src/main.tsx"`,
-        `src="/src/main.tsx?v=${nanoid()}"`,
+        `src="/src/main.tsx?v=${nanoid()}"`
       );
 
       // Transform the HTML with Vite (injects HMR, etc.)
@@ -74,18 +74,19 @@ export async function setupVite(app: Express, server: Server) {
 
 // serveStatic is ONLY used in production after build
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(import.meta.dirname, "..", "dist"); // <-- fix path to dist
+  const distPath = path.resolve(import.meta.dirname, "..", "client", "dist"); // ✅ ensure this points to client build
 
   if (!fs.existsSync(distPath)) {
     throw new Error(
-      `Could not find the build directory: ${distPath}, make sure to build the client first`,
+      `Could not find the build directory: ${distPath}. Make sure to run "npm run build" in the client directory first.`
     );
   }
 
+  // Serve static assets
   app.use(express.static(distPath));
 
-  // Fallback to index.html for SPA routing
+  // SPA Fallback: serve index.html for any unknown routes
   app.use("*", (_req, res) => {
-    res.sendFile(path.resolve(distPath, "index.html"));
+    res.sendFile(path.join(distPath, "index.html"));
   });
 }
