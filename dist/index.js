@@ -288,7 +288,7 @@ function setupAuth(app2) {
       }
       req.login(user, (err) => {
         if (err) return next(err);
-        res.status(201).json(user);
+        res.redirect("/");
       });
     } catch (error) {
       next(error);
@@ -327,14 +327,14 @@ function setupAuth(app2) {
       ]);
       req.login(user, (err) => {
         if (err) return next(err);
-        res.status(201).json(user);
+        res.redirect("/");
       });
     } catch (error) {
       next(error);
     }
   });
   app2.post("/api/login", passport.authenticate("local"), (req, res) => {
-    res.status(200).json(req.user);
+    res.redirect("/");
   });
   app2.post("/api/logout", (req, res, next) => {
     req.logout((err) => {
@@ -536,40 +536,35 @@ async function registerRoutes(app2) {
 // server/vite.ts
 import express from "express";
 import fs from "fs";
-import path2 from "path";
+import path from "path";
 import { createServer as createViteServer, createLogger } from "vite";
 
 // vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { fileURLToPath } from "url";
-import { dirname } from "path";
-import path from "path";
+import { dirname, resolve } from "path";
 var __filename = fileURLToPath(import.meta.url);
 var __dirname = dirname(__filename);
 var vite_config_default = defineConfig({
-  plugins: [
-    react()
-  ],
-  root: "client",
-  // Ensure Vite serves from the client folder
+  root: resolve(__dirname, "client"),
+  // ✅ Point Vite to client/
+  plugins: [react()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "client/src"),
-      // Ensure path is resolved correctly
-      "@shared": path.resolve(__dirname, "shared")
-      // Shared directory path
+      "@": resolve(__dirname, "client/src"),
+      // ✅ Allows imports like '@/components/ui'
+      "@shared": resolve(__dirname, "shared")
+      // ✅ Allows imports like '@shared/interfaces'
     }
   },
   server: {
     port: 3e3
-    // Customize port if necessary
   },
   build: {
     target: "esnext",
-    // Modern JavaScript output
-    sourcemap: true
-    // Enable source maps for debugging
+    sourcemap: true,
+    outDir: resolve(__dirname, "dist")
   }
 });
 
@@ -607,7 +602,7 @@ async function setupVite(app2, server) {
   app2.use("*", async (req, res, next) => {
     const url = req.originalUrl;
     try {
-      const clientTemplate = path2.resolve(
+      const clientTemplate = path.resolve(
         import.meta.dirname,
         "..",
         "client",
@@ -627,19 +622,21 @@ async function setupVite(app2, server) {
   });
 }
 function serveStatic(app2) {
-  const distPath = path2.resolve(import.meta.dirname, "..", "dist");
+  const distPath = path.resolve(import.meta.dirname, "..", "client", "dist");
   if (!fs.existsSync(distPath)) {
     throw new Error(
-      `Could not find the build directory: ${distPath}, make sure to build the client first`
+      `Could not find the build directory: ${distPath}. Make sure to run "npm run build" in the client directory first.`
     );
   }
   app2.use(express.static(distPath));
   app2.use("*", (_req, res) => {
-    res.sendFile(path2.resolve(distPath, "index.html"));
+    res.sendFile(path.join(distPath, "index.html"));
   });
 }
 
 // server/index.ts
+import dotenv from "dotenv";
+dotenv.config();
 var app = express2();
 app.use(express2.json());
 app.use(express2.urlencoded({ extended: false }));
@@ -647,15 +644,13 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
+  if (req.method === "OPTIONS") return res.status(200).end();
   next();
 });
 app.use((req, res, next) => {
   const start = Date.now();
-  const path3 = req.path;
-  let capturedJsonResponse = void 0;
+  const path2 = req.path;
+  let capturedJsonResponse;
   const originalResJson = res.json;
   res.json = function(bodyJson, ...args) {
     capturedJsonResponse = bodyJson;
@@ -663,14 +658,10 @@ app.use((req, res, next) => {
   };
   res.on("finish", () => {
     const duration = Date.now() - start;
-    if (path3.startsWith("/api")) {
-      let logLine = `${req.method} ${path3} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "\u2026";
-      }
+    if (path2.startsWith("/api")) {
+      let logLine = `${req.method} ${path2} ${res.statusCode} in ${duration}ms`;
+      if (capturedJsonResponse) logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
+      if (logLine.length > 80) logLine = logLine.slice(0, 79) + "\u2026";
       log(logLine);
     }
   });
@@ -682,21 +673,15 @@ async function startServer() {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
     console.error(`Error: ${message}`, err);
-    if (!res.headersSent) {
-      res.status(status).json({ message });
-    }
+    if (!res.headersSent) res.status(status).json({ message });
   });
-  const port = 5e3;
+  const port = 5050;
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
-    server.listen(port, () => {
-      log(`dev server running on http://localhost:${port}`);
-    });
+    server.listen(port, () => log(`dev server running on http://localhost:${port}`));
   } else {
     serveStatic(app);
-    server.listen(port, () => {
-      log(`production server running on http://localhost:${port}`);
-    });
+    server.listen(port, () => log(`production server running on http://localhost:${port}`));
   }
 }
 startServer();
