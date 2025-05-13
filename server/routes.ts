@@ -34,12 +34,9 @@ const registerCompanySchema = z.object({
   industry: z.string().min(3, "Industry must be at least 3 characters long"),
 });
 
-// Updated AuthUser interface with username as required
 interface AuthUser extends JWTPayload {
   id: number;
-  email: string;
   role: string;
-  username: string; // 'username' is now required
 }
 
 type AuthRequest = Request<any, any, any, any> & {
@@ -67,14 +64,11 @@ async function verifyToken(req: any, res: any, next: any) {
 
   try {
     const { payload } = await jwtVerify(token, new TextEncoder().encode(SUPABASE_JWT_SECRET));
-
     req.user = {
-      id: payload.sub as unknown as number,
-      email: payload.email as string,
-      role: (payload.role as string) || "intern",
-      username: payload.username as string,  // 'username' is now required
+      id: payload.sub,
+      email: payload.email,
+      role: payload.role || "intern", // Adjust according to how roles are stored
     };
-
     next();
   } catch (error) {
     return res.status(401).json({ message: "Invalid token" });
@@ -84,50 +78,23 @@ async function verifyToken(req: any, res: any, next: any) {
 export async function registerRoutes(app: Express): Promise<Server> {
   // Other routes (ping, health, etc.)
 
-  // Internships route (General route for fetching all internships)
-  app.get("/api/internships", async (req, res) => { 
+  // Internships route
+  app.get("/api/internships", async (req, res) => {
     try {
       const { page = 1, pageSize = 10 } = req.query;
+      console.log('Request Params:', { page, pageSize }); // Log the request parameters
+
       const internships = await supabaseStorage.getAllInternships(Number(page), Number(pageSize));
+      console.log('Internships:', internships); // Log the fetched internships
+
       res.json(internships);
     } catch (error) {
+      console.error('Error:', error); // Log the error to get more context
       res.status(500).json({ message: 'Server error', error });
     }
   });
 
-  // Filtered internships route (For filtering by industry, location, etc.)
-  app.get("/api/internships/filter", async (req, res) => { 
-    try {
-      const { industry, location, duration } = req.query;
-      const internships = await supabaseStorage.getAllInternships(1, 10);
-  
-      let filteredInternships = internships;
-
-if (industry && typeof industry === 'string') {
-  filteredInternships = filteredInternships.filter(
-    internship => internship.industry.toLowerCase() === industry.toLowerCase()
-  );
-}
-
-if (location && typeof location === 'string') {
-  filteredInternships = filteredInternships.filter(
-    internship => internship.location.toLowerCase().includes(location.toLowerCase())
-  );
-}
-
-if (duration && typeof duration === 'string') {
-  filteredInternships = filteredInternships.filter(
-    internship => internship.duration.toLowerCase() === duration.toLowerCase()
-  );
-}
-  
-      res.json(filteredInternships);
-    } catch (error) {
-      res.status(500).json({ message: "Server error", error });
-    }
-  });
-
-  // Health check endpoint
+  // Add a basic health check endpoint
   app.get("/api/health", (req, res) => {
     res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
   });
@@ -166,7 +133,43 @@ if (duration && typeof duration === 'string') {
     }
   });
 
-  // Internship by ID route
+  // Internship routes
+  app.get("/api/internships", async (req, res) => {
+    try {
+      const { industry, location, duration } = req.query;
+  
+      // Extract pagination from query or use defaults
+      const page = parseInt(req.query.page as string) || 1;
+      const pageSize = parseInt(req.query.pageSize as string) || 10;
+  
+      const internships = await supabaseStorage.getAllInternships(page, pageSize);
+  
+      let filteredInternships = internships;
+  
+      if (industry && typeof industry === 'string') {
+        filteredInternships = filteredInternships.filter(
+          internship => internship.industry.toLowerCase() === industry.toLowerCase()
+        );
+      }
+  
+      if (location && typeof location === 'string') {
+        filteredInternships = filteredInternships.filter(
+          internship => internship.location.toLowerCase().includes(location.toLowerCase())
+        );
+      }
+  
+      if (duration && typeof duration === 'string') {
+        filteredInternships = filteredInternships.filter(
+          internship => internship.duration.toLowerCase() === duration.toLowerCase()
+        );
+      }
+  
+      res.json(filteredInternships);
+    } catch (error) {
+      res.status(500).json({ message: "Server error", error });
+    }
+  });
+
   app.get("/api/internships/:id", async (req, res) => {
     try {
       const internshipId = parseInt(req.params.id);
@@ -181,7 +184,7 @@ if (duration && typeof duration === 'string') {
       res.status(500).json({ message: "Server error", error });
     }
   });
-
+  
   app.get("/api/internships/company/:companyId", async (req, res) => {
     try {
       const companyId = parseInt(req.params.companyId);
@@ -192,23 +195,27 @@ if (duration && typeof duration === 'string') {
     }
   });
 
-  // Internship creation route (Requires authentication and role check)
   app.post("/api/internships", verifyToken, async (req, res) => {
     try {
+      // Check if req.user is defined
       if (!req.user) {
         return res.status(401).json({ message: "Unauthorized" });
       }
-
+  
+      // Check if the user is a company
       if (req.user.role !== "company") {
         return res.status(403).json({ message: "Forbidden: You must be a company to create internships" });
       }
-
+  
+      // Ensure 'isActive' is not null before validation
       if (req.body.isActive === null) {
         req.body.isActive = undefined;  // Convert null to undefined
       }
-
+  
+      // Validate and parse input using Zod
       const validatedData = insertInternshipSchema.parse(req.body);
   
+      // Create the internship using the validated data
       const internship = await supabaseStorage.createInternship(validatedData);
       res.status(201).json(internship);
     } catch (error) {
@@ -223,6 +230,7 @@ if (duration && typeof duration === 'string') {
   app.post("/api/register/intern", async (req, res) => {
     try {
       const validatedData = registerInternSchema.parse(req.body);
+      // Registration logic for intern (you'd likely store in database)
       res.status(201).json({ message: "Intern registered successfully", data: validatedData });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -235,6 +243,7 @@ if (duration && typeof duration === 'string') {
   app.post("/api/register/company", async (req, res) => {
     try {
       const validatedData = registerCompanySchema.parse(req.body);
+      // Registration logic for company (you'd likely store in database)
       res.status(201).json({ message: "Company registered successfully", data: validatedData });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -244,11 +253,9 @@ if (duration && typeof duration === 'string') {
     }
   });
 
-  // Catch-all route for undefined routes
-  app.use((req, res) => {
-    res.status(404).json({ message: "Route not found" });
-  });
+  // ... other route definitions ...
 
+  // At the very bottom of your function
   const server = createServer(app);
   return server;
 }
