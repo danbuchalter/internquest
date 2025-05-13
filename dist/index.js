@@ -548,14 +548,13 @@ var __filename = fileURLToPath(import.meta.url);
 var __dirname = dirname(__filename);
 var vite_config_default = defineConfig({
   root: resolve(__dirname, "client"),
-  // ✅ Point Vite to client/
+  // ✅ Root stays in client/
   plugins: [react()],
   resolve: {
     alias: {
       "@": resolve(__dirname, "client/src"),
-      // ✅ Allows imports like '@/components/ui'
+      // ✅ Shortcuts
       "@shared": resolve(__dirname, "shared")
-      // ✅ Allows imports like '@shared/interfaces'
     }
   },
   server: {
@@ -564,7 +563,10 @@ var vite_config_default = defineConfig({
   build: {
     target: "esnext",
     sourcemap: true,
-    outDir: resolve(__dirname, "dist")
+    outDir: resolve(__dirname, "client/dist"),
+    // ✅ Ensures Vite builds to the correct folder
+    emptyOutDir: true
+    // ✅ Optional: cleans the dist folder before building
   }
 });
 
@@ -629,7 +631,7 @@ function serveStatic(app2) {
     );
   }
   app2.use(express.static(distPath));
-  app2.use("*", (_req, res) => {
+  app2.get("*", (_req, res) => {
     res.sendFile(path.join(distPath, "index.html"));
   });
 }

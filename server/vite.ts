@@ -86,7 +86,7 @@ export function serveStatic(app: Express) {
   // ✅ Serve static assets
   app.use(express.static(distPath));
 
-  // ✅ SPA fallback: serve index.html for unknown routes
+  // ✅ SPA fallback: serve index.html for all unmatched routes
   app.get("*", (_req, res) => {
     res.sendFile(path.join(distPath, "index.html"));
   });
