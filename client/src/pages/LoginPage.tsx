@@ -8,7 +8,7 @@ import { Form, FormField, FormLabel, FormControl, FormMessage } from "@/componen
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "wouter";
+import { useNavigate } from "react-router-dom";
 
 const loginSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
