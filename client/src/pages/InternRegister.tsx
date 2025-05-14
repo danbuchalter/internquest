@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Tabs, TabsContent } from '@/components/ui/Tabs';
 
 const InternRegister = () => {
-  const [activeTab, setActiveTab] = useState('register');
+  const [activeTab] = useState('register');
   const internRegForm = useForm();
 
   const registerInternMutation = useMutation({
@@ -152,7 +152,7 @@ const InternRegister = () => {
 
             <Button
               type="submit"
-              className="w-full mt-8 text-lg p-6 font-semibold"
+              className="w-full mt-8 text-lg p-6 font-semibold bg-blue-600 text-white border border-blue-700 hover:bg-blue-700"
               disabled={registerInternMutation.isPending}
             >
               {registerInternMutation.isPending ? (
@@ -166,18 +166,6 @@ const InternRegister = () => {
             </Button>
           </form>
         </TabsContent>
-
-        <div className="text-center mt-4">
-          <p className="text-sm text-gray-500">
-            Already have an account?{' '}
-            <button
-              onClick={() => setActiveTab('login')}
-              className="text-primary hover:underline font-medium"
-            >
-              Sign in here
-            </button>
-          </p>
-        </div>
       </Tabs>
     </div>
   );
