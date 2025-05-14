@@ -58,7 +58,7 @@ export async function setupVite(app: Express, server: Server) {
 
       // Add cache-busting to main.tsx
       template = template.replace(
-        `src="/src/main.tsx"`,
+        'src="/src/main.tsx"',
         `src="/src/main.tsx?v=${nanoid()}"`
       );
 
