@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom"; // Use this instead of wouter's useLocation
+import { useNavigate } from "react-router-dom"; // Correct way to navigate using react-router-dom
 import { Building2, GraduationCap } from "lucide-react";
 
 export default function UserTypeSelection() {
@@ -8,9 +8,9 @@ export default function UserTypeSelection() {
 
   const handleUserTypeSelection = (type: 'intern' | 'company') => {
     if (type === 'intern') {
-      navigate('/intern-register'); // Navigate to the Intern Register page
+      navigate('/register/intern'); // ✅ This matches your route for Intern registration
     } else if (type === 'company') {
-      navigate('/company-register'); // Navigate to the Company Register page
+      navigate('/register/company'); // ✅ This matches your route for Company registration
     }
   };
 
