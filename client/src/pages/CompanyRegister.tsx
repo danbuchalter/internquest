@@ -156,7 +156,7 @@ const CompanyRegister = () => {
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full mt-8 text-lg p-6 font-semibold"
+              className="w-full mt-8 text-lg p-6 font-semibold bg-blue-600 hover:bg-blue-700 text-white border border-blue-700"
               disabled={registerCompanyMutation.isPending}
             >
               {registerCompanyMutation.isPending ? (
