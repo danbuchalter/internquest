@@ -34,91 +34,125 @@ const InternRegister = () => {
     <div className="container mx-auto p-6">
       <Tabs defaultValue="register" value={activeTab}>
         <TabsContent value="register">
-          <form onSubmit={internRegForm.handleSubmit(onInternRegisterSubmit)} className="space-y-4">
-            {/* Full Name */}
-            <div>
-              <label>Full Name</label>
-              <Input placeholder="Your full name" {...internRegForm.register("name")} />
+          <form
+            onSubmit={internRegForm.handleSubmit(onInternRegisterSubmit)}
+            className="space-y-8"
+          >
+            <h3 className="text-xl font-semibold mb-4">Intern Registration</h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block mb-1">Full Name</label>
+                <Input
+                  placeholder="Your full name"
+                  {...internRegForm.register('name')}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1">Username</label>
+                <Input
+                  placeholder="Your preferred username"
+                  {...internRegForm.register('username')}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1">Email</label>
+                <Input
+                  type="email"
+                  placeholder="Your email address"
+                  {...internRegForm.register('email')}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1">Phone Number</label>
+                <Input
+                  type="tel"
+                  placeholder="Your phone number"
+                  {...internRegForm.register('phone')}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1">Location</label>
+                <Input
+                  placeholder="Your location"
+                  {...internRegForm.register('location')}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1">Bio</label>
+                <Input
+                  placeholder="Brief description about yourself"
+                  {...internRegForm.register('bio')}
+                />
+              </div>
             </div>
 
-            {/* Username */}
-            <div>
-              <label>Username</label>
-              <Input placeholder="Your preferred username" {...internRegForm.register("username")} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block mb-1">Password</label>
+                <Input
+                  type="password"
+                  placeholder="Create a password"
+                  {...internRegForm.register('password')}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1">Confirm Password</label>
+                <Input
+                  type="password"
+                  placeholder="Confirm your password"
+                  {...internRegForm.register('confirmPassword')}
+                />
+              </div>
             </div>
 
-            {/* Email */}
-            <div>
-              <label>Email</label>
-              <Input type="email" placeholder="Your email address" {...internRegForm.register("email")} />
-            </div>
-
-            {/* Password */}
-            <div>
-              <label>Password</label>
-              <Input type="password" placeholder="Create a password" {...internRegForm.register("password")} />
-            </div>
-
-            {/* Confirm Password */}
-            <div>
-              <label>Confirm Password</label>
-              <Input type="password" placeholder="Confirm your password" {...internRegForm.register("confirmPassword")} />
-            </div>
-
-            {/* Phone Number */}
-            <div>
-              <label>Phone Number</label>
-              <Input type="tel" placeholder="Your phone number" {...internRegForm.register("phone")} />
-            </div>
-
-            {/* Location */}
-            <div>
-              <label>Location</label>
-              <Input placeholder="Your location" {...internRegForm.register("location")} />
-            </div>
-
-            {/* Bio */}
-            <div>
-              <label>Bio</label>
-              <Input placeholder="Brief description about yourself" {...internRegForm.register("bio")} />
-            </div>
-
-            {/* Profile Picture */}
             <div className="border p-4 rounded-lg bg-blue-50 border-blue-200">
-              <label className="text-xl font-bold text-blue-700">Profile Picture</label>
-              <p className="text-base text-blue-600 mb-3">Upload a clear photo of yourself</p>
-              <Input 
-                type="file" 
+              <label className="text-xl font-bold text-blue-700 block mb-2">
+                Profile Picture
+              </label>
+              <p className="text-base text-blue-600 mb-3">
+                Upload a clear photo of yourself
+              </p>
+              <Input
+                type="file"
                 accept="image/*"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   const file = e.target.files?.[0];
                   if (file) {
-                    internRegForm.setValue("profilePicture", file);
+                    internRegForm.setValue('profilePicture', file);
                   }
                 }}
               />
             </div>
 
-            {/* CV / Resume */}
             <div className="border p-4 rounded-lg bg-green-50 border-green-200">
-              <label className="text-xl font-bold text-green-700">CV / Resume</label>
-              <p className="text-base text-green-600 mb-3">Upload your CV in PDF, DOC, or DOCX format</p>
-              <Input 
-                type="file" 
+              <label className="text-xl font-bold text-green-700 block mb-2">
+                CV / Resume
+              </label>
+              <p className="text-base text-green-600 mb-3">
+                Upload your CV in PDF, DOC, or DOCX format
+              </p>
+              <Input
+                type="file"
                 accept=".pdf,.doc,.docx"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   const file = e.target.files?.[0];
                   if (file) {
-                    internRegForm.setValue("cvFile", file);
+                    internRegForm.setValue('cvFile', file);
                   }
                 }}
               />
             </div>
 
-            {/* Submit Button */}
-            <Button 
-              type="submit" 
-              className="w-full mt-6 text-xl p-6 font-bold"
+            <Button
+              type="submit"
+              className="w-full mt-8 text-lg p-6 font-semibold"
               disabled={registerInternMutation.isPending}
             >
               {registerInternMutation.isPending ? (
@@ -127,7 +161,7 @@ const InternRegister = () => {
                   Creating account...
                 </>
               ) : (
-                "Create Intern Account"
+                'Create Intern Account'
               )}
             </Button>
           </form>
@@ -135,7 +169,7 @@ const InternRegister = () => {
 
         <div className="text-center mt-4">
           <p className="text-sm text-gray-500">
-            Already have an account?{" "}
+            Already have an account?{' '}
             <button
               onClick={() => setActiveTab('login')}
               className="text-primary hover:underline font-medium"
