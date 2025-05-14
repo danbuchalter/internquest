@@ -35,11 +35,55 @@ const InternRegister = () => {
       <Tabs defaultValue="register" value={activeTab}>
         <TabsContent value="register">
           <form onSubmit={internRegForm.handleSubmit(onInternRegisterSubmit)} className="space-y-4">
+            {/* Full Name */}
+            <div>
+              <label>Full Name</label>
+              <Input placeholder="Your full name" {...internRegForm.register("name")} />
+            </div>
+
+            {/* Username */}
+            <div>
+              <label>Username</label>
+              <Input placeholder="Your preferred username" {...internRegForm.register("username")} />
+            </div>
+
+            {/* Email */}
+            <div>
+              <label>Email</label>
+              <Input type="email" placeholder="Your email address" {...internRegForm.register("email")} />
+            </div>
+
+            {/* Password */}
+            <div>
+              <label>Password</label>
+              <Input type="password" placeholder="Create a password" {...internRegForm.register("password")} />
+            </div>
+
+            {/* Confirm Password */}
+            <div>
+              <label>Confirm Password</label>
+              <Input type="password" placeholder="Confirm your password" {...internRegForm.register("confirmPassword")} />
+            </div>
+
+            {/* Phone Number */}
+            <div>
+              <label>Phone Number</label>
+              <Input type="tel" placeholder="Your phone number" {...internRegForm.register("phone")} />
+            </div>
+
+            {/* Location */}
+            <div>
+              <label>Location</label>
+              <Input placeholder="Your location" {...internRegForm.register("location")} />
+            </div>
+
+            {/* Bio */}
             <div>
               <label>Bio</label>
               <Input placeholder="Brief description about yourself" {...internRegForm.register("bio")} />
             </div>
 
+            {/* Profile Picture */}
             <div className="border p-4 rounded-lg bg-blue-50 border-blue-200">
               <label className="text-xl font-bold text-blue-700">Profile Picture</label>
               <p className="text-base text-blue-600 mb-3">Upload a clear photo of yourself</p>
@@ -55,6 +99,7 @@ const InternRegister = () => {
               />
             </div>
 
+            {/* CV / Resume */}
             <div className="border p-4 rounded-lg bg-green-50 border-green-200">
               <label className="text-xl font-bold text-green-700">CV / Resume</label>
               <p className="text-base text-green-600 mb-3">Upload your CV in PDF, DOC, or DOCX format</p>
@@ -70,6 +115,7 @@ const InternRegister = () => {
               />
             </div>
 
+            {/* Submit Button */}
             <Button 
               type="submit" 
               className="w-full mt-6 text-xl p-6 font-bold"
