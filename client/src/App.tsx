@@ -27,6 +27,7 @@ import ContactUs from "@/pages/ContactUs";
 import DashboardRedirect from "@/pages/DashboardRedirect";
 import InternRegister from "@/pages/InternRegister";
 import CompanyRegister from "@/pages/CompanyRegister";
+import LoginPage from "@/pages/LoginPage"; // Import the LoginPage
 
 function Router() {
   const location = useLocation();
@@ -46,6 +47,10 @@ function Router() {
           <Route path="/" element={<HomePage />} />
           <Route path="/register" element={<UserTypeSelection />} />
           <Route path="/auth" element={<AuthPage />} />
+          
+          {/* Add LoginPage route */}
+          <Route path="/login" element={<LoginPage />} /> {/* Added LoginPage route */}
+
           <Route path="/internships" element={<InternshipList />} />
 
           {/* Dynamic route for InternshipDetail */}
