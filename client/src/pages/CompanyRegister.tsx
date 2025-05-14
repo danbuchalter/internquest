@@ -1,9 +1,9 @@
 import { Button, Input } from '@/components/ui';
-import { Tabs, TabsContent } from "@/components/ui/Tabs";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
+import { Tabs, TabsContent } from '@/components/ui/Tabs';
+import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { Loader2 } from 'lucide-react';
 
 type CompanyFormData = {
   user: {
@@ -24,12 +24,12 @@ type CompanyFormData = {
 };
 
 const CompanyRegister = () => {
-  const [activeTab] = useState("register");
+  const [activeTab] = useState('register');
   const companyRegForm = useForm<CompanyFormData>();
 
   const registerCompanyMutation = useMutation({
     mutationFn: async (data: CompanyFormData) => {
-      console.log("Company Registration Data:", data);
+      console.log('Company Registration Data:', data);
       // Add real API call logic here
     },
   });
@@ -44,98 +44,119 @@ const CompanyRegister = () => {
         <TabsContent value="register">
           <form
             onSubmit={companyRegForm.handleSubmit(onCompanyRegisterSubmit)}
-            className="space-y-4"
+            className="space-y-8"
           >
+            {/* Account Information */}
             <div>
-              <h3 className="text-lg font-medium mb-2">Account Information</h3>
+              <h3 className="text-xl font-semibold mb-4">Account Information</h3>
               <div className="space-y-4">
-                <label>Contact Person Name</label>
-                <Input
-                  placeholder="Full name of contact person"
-                  {...companyRegForm.register("user.name")}
-                />
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <label>Username</label>
+                <div>
+                  <label className="block mb-1">Contact Person Name</label>
                   <Input
-                    placeholder="Choose a username"
-                    {...companyRegForm.register("user.username")}
-                  />
-
-                  <label>Email</label>
-                  <Input
-                    type="email"
-                    placeholder="Company email address"
-                    {...companyRegForm.register("user.email")}
+                    placeholder="Full name of contact person"
+                    {...companyRegForm.register('user.name')}
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <label>Password</label>
-                  <Input
-                    type="password"
-                    placeholder="Create a password"
-                    {...companyRegForm.register("user.password")}
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block mb-1">Username</label>
+                    <Input
+                      placeholder="Choose a username"
+                      {...companyRegForm.register('user.username')}
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-1">Email</label>
+                    <Input
+                      type="email"
+                      placeholder="Company email address"
+                      {...companyRegForm.register('user.email')}
+                    />
+                  </div>
+                </div>
 
-                  <label>Confirm Password</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block mb-1">Password</label>
+                    <Input
+                      type="password"
+                      placeholder="Create a password"
+                      {...companyRegForm.register('user.password')}
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-1">Confirm Password</label>
+                    <Input
+                      type="password"
+                      placeholder="Confirm your password"
+                      {...companyRegForm.register('user.confirmPassword')}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block mb-1">Phone</label>
+                    <Input
+                      placeholder="Contact phone number"
+                      {...companyRegForm.register('user.phone')}
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-1">Location</label>
+                    <Input
+                      placeholder="Company address"
+                      {...companyRegForm.register('user.location')}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Company Information */}
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Company Information</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block mb-1">Company Name</label>
                   <Input
-                    type="password"
-                    placeholder="Confirm your password"
-                    {...companyRegForm.register("user.confirmPassword")}
+                    placeholder="Legal company name"
+                    {...companyRegForm.register('company.companyName')}
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <label>Phone</label>
-                  <Input
-                    placeholder="Contact phone number"
-                    {...companyRegForm.register("user.phone")}
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block mb-1">Industry</label>
+                    <Input
+                      placeholder="e.g. Technology, Finance"
+                      {...companyRegForm.register('company.industry')}
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-1">Website</label>
+                    <Input
+                      placeholder="Company website URL"
+                      {...companyRegForm.register('company.website')}
+                    />
+                  </div>
+                </div>
 
-                  <label>Location</label>
+                <div>
+                  <label className="block mb-1">Company Description</label>
                   <Input
-                    placeholder="Company address"
-                    {...companyRegForm.register("user.location")}
+                    placeholder="Brief description of your company"
+                    {...companyRegForm.register('company.description')}
                   />
                 </div>
               </div>
             </div>
 
-            <div>
-              <h3 className="text-lg font-medium mb-2">Company Information</h3>
-              <div className="space-y-4">
-                <label>Company Name</label>
-                <Input
-                  placeholder="Legal company name"
-                  {...companyRegForm.register("company.companyName")}
-                />
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <label>Industry</label>
-                  <Input
-                    placeholder="e.g. Technology, Finance"
-                    {...companyRegForm.register("company.industry")}
-                  />
-
-                  <label>Website</label>
-                  <Input
-                    placeholder="Company website URL"
-                    {...companyRegForm.register("company.website")}
-                  />
-                </div>
-
-                <label>Company Description</label>
-                <Input
-                  placeholder="Brief description of your company"
-                  {...companyRegForm.register("company.description")}
-                />
-              </div>
-            </div>
-
+            {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full mt-6 text-xl p-6 font-bold"
+              className="w-full mt-8 text-lg p-6 font-semibold"
               disabled={registerCompanyMutation.isPending}
             >
               {registerCompanyMutation.isPending ? (
@@ -144,7 +165,7 @@ const CompanyRegister = () => {
                   Creating account...
                 </>
               ) : (
-                "Create Company Account"
+                'Create Company Account'
               )}
             </Button>
           </form>
