@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { BaseSyntheticEvent, useState } from "react";
+import { ErrorOption, FieldError, FieldValues, FormState, ReadFormState, RegisterOptions, SubmitErrorHandler, SubmitHandler, UseFormRegisterReturn, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/Button";
@@ -81,7 +81,47 @@ export default function LoginPage() {
           <p className="text-gray-600">Please enter your credentials to access your account.</p>
         </div>
 
-        <Form {...{ control }}>
+        <Form children={undefined} watch={{}} getValues={{}} getFieldState={function <TFieldName extends string>(name: TFieldName, formState?: FormState<FieldValues> | undefined): { invalid: boolean; isDirty: boolean; isTouched: boolean; isValidating: boolean; error?: FieldError | undefined; } {
+                  throw new Error("Function not implemented.");
+              } } setError={function (name: string, error: ErrorOption, options?: { shouldFocus: boolean; } | undefined): void {
+                  throw new Error("Function not implemented.");
+              } } clearErrors={function (name?: string | string[] | readonly string[] | undefined): void {
+                  throw new Error("Function not implemented.");
+              } } setValue={function <TFieldName extends string = string>(name: TFieldName, value: TFieldName extends `${infer K}.${infer R}` ? K extends string ? R extends `${infer K}.${infer R}` ? K extends string | number | symbol ? R extends `${infer K}.${infer R}` ? K extends string | number | symbol ? R extends `${infer K}.${infer R}` ? K extends string | number | symbol ? R extends `${infer K}.${infer R}` ? K extends string | number | symbol ? R extends `${infer K}.${infer R}` ? K extends string | number | symbol ? R extends `${infer K}.${infer R}` ? K extends string | number | symbol ? R extends `${infer K}.${infer R}` ? K extends string | number | symbol ? R extends `${infer K}.${infer R}` ? K extends string | number | symbol ? R extends `${infer K}.${infer R}` ? K extends string | number | symbol ? R extends `${infer K}.${infer R}` ? K extends string | number | symbol ? any : K extends `${number}` ? any : never : R extends string | number | symbol ? any : R extends `${number}` ? unknown : never : K extends `${number}` ? any : never : R extends string | number | symbol ? any : R extends `${number}` ? unknown : never : K extends `${number}` ? any : never : R extends string | number | symbol ? any : R extends `${number}` ? unknown : never : K extends `${number}` ? any : never : R extends string | number | symbol ? any : R extends `${number}` ? unknown : never : K extends `${number}` ? any : never : R extends string | number | symbol ? any : R extends `${number}` ? unknown : never : K extends `${number}` ? any : never : R extends string | number | symbol ? any : R extends `${number}` ? unknown : never : K extends `${number}` ? any : never : R extends string | number | symbol ? any : R extends `${number}` ? unknown : never : K extends `${number}` ? any : never : R extends string | number | symbol ? any : R extends `${number}` ? unknown : never : K extends `${number}` ? any : never : R extends string | number | symbol ? any : R extends `${number}` ? unknown : never : K extends `${number}` ? any : never : R extends string | number | symbol ? any : R extends `${number}` ? unknown : never : K extends `${number}` ? never : never : TFieldName extends string ? any : TFieldName extends `${number}` ? never : never, options?: Partial<{ shouldValidate: boolean; shouldDirty: boolean; shouldTouch: boolean; }> | undefined): void {
+                  throw new Error("Function not implemented.");
+              } } trigger={function (name?: string | string[] | readonly string[] | undefined, options?: Partial<{ shouldFocus: boolean; }> | undefined): Promise<boolean> {
+                  throw new Error("Function not implemented.");
+              } } formState={{
+                  isDirty: false,
+                  isLoading: false,
+                  isSubmitted: false,
+                  isSubmitSuccessful: false,
+                  isSubmitting: false,
+                  isValidating: false,
+                  isValid: false,
+                  disabled: false,
+                  submitCount: 0,
+                  defaultValues: undefined,
+                  dirtyFields: undefined,
+                  touchedFields: undefined,
+                  validatingFields: undefined,
+                  errors: undefined,
+                  isReady: false
+              }} resetField={function <TFieldName extends string = string>(name: TFieldName, options?: Partial<{ keepDirty: boolean; keepTouched: boolean; keepError: boolean; defaultValue: TFieldName extends `${infer K}.${infer R}` ? K extends string ? R extends `${infer K}.${infer R}` ? K extends string | number | symbol ? R extends `${infer K}.${infer R}` ? K extends string | number | symbol ? R extends `${infer K}.${infer R}` ? K extends string | number | symbol ? R extends `${infer K}.${infer R}` ? K extends string | number | symbol ? R extends `${infer K}.${infer R}` ? K extends string | number | symbol ? R extends `${infer K}.${infer R}` ? K extends string | number | symbol ? R extends `${infer K}.${infer R}` ? K extends string | number | symbol ? R extends `${infer K}.${infer R}` ? K extends string | number | symbol ? R extends `${infer K}.${infer R}` ? K extends string | number | symbol ? R extends `${infer K}.${infer R}` ? K extends string | number | symbol ? any : K extends `${number}` ? any : never : R extends string | number | symbol ? any : R extends `${number}` ? unknown : never : K extends `${number}` ? any : never : R extends string | number | symbol ? any : R extends `${number}` ? unknown : never : K extends `${number}` ? any : never : R extends string | number | symbol ? any : R extends `${number}` ? unknown : never : K extends `${number}` ? any : never : R extends string | number | symbol ? any : R extends `${number}` ? unknown : never : K extends `${number}` ? any : never : R extends string | number | symbol ? any : R extends `${number}` ? unknown : never : K extends `${number}` ? any : never : R extends string | number | symbol ? any : R extends `${number}` ? unknown : never : K extends `${number}` ? any : never : R extends string | number | symbol ? any : R extends `${number}` ? unknown : never : K extends `${number}` ? any : never : R extends string | number | symbol ? any : R extends `${number}` ? unknown : never : K extends `${number}` ? any : never : R extends string | number | symbol ? any : R extends `${number}` ? unknown : never : K extends `${number}` ? any : never : R extends string | number | symbol ? any : R extends `${number}` ? unknown : never : K extends `${number}` ? never : never : TFieldName extends string ? any : TFieldName extends `${number}` ? never : never; }> | undefined): void {
+                  throw new Error("Function not implemented.");
+              } } reset={function (values?: FieldValues | { [x: string]: any; } | ((formValues: FieldValues) => FieldValues) | undefined, keepStateOptions?: Partial<{ keepDirtyValues: boolean; keepErrors: boolean; keepDirty: boolean; keepValues: boolean; keepDefaultValues: boolean; keepIsSubmitted: boolean; keepIsSubmitSuccessful: boolean; keepTouched: boolean; keepIsValidating: boolean; keepIsValid: boolean; keepSubmitCount: boolean; }> | undefined): void {
+                  throw new Error("Function not implemented.");
+              } } handleSubmit={function (onValid: SubmitHandler<FieldValues>, onInvalid?: SubmitErrorHandler<FieldValues> | undefined): (e?: BaseSyntheticEvent<object, any, any> | undefined) => Promise<void> {
+                  throw new Error("Function not implemented.");
+              } } unregister={function (name?: string | string[] | readonly string[] | undefined, options?: (Omit<Partial<{ keepDirtyValues: boolean; keepErrors: boolean; keepDirty: boolean; keepValues: boolean; keepDefaultValues: boolean; keepIsSubmitted: boolean; keepIsSubmitSuccessful: boolean; keepTouched: boolean; keepIsValidating: boolean; keepIsValid: boolean; keepSubmitCount: boolean; }>, "keepErrors" | "keepValues" | "keepDefaultValues" | "keepIsSubmitted" | "keepSubmitCount"> & { keepValue?: boolean | undefined; keepDefaultValue?: boolean | undefined; keepError?: boolean | undefined; }) | undefined): void {
+                  throw new Error("Function not implemented.");
+              } } register={function <TFieldName extends string = string>(name: TFieldName, options?: RegisterOptions<FieldValues, TFieldName> | undefined): UseFormRegisterReturn<TFieldName> {
+                  throw new Error("Function not implemented.");
+              } } setFocus={function <TFieldName extends string = string>(name: TFieldName, options?: Partial<{ shouldSelect: boolean; }> | undefined): void {
+                  throw new Error("Function not implemented.");
+              } } subscribe={function (payload: { name?: string | undefined; formState?: Partial<ReadFormState> | undefined; callback: (data: Partial<FormState<FieldValues>> & { values: FieldValues; }) => void; exact?: boolean | undefined; }): () => void {
+                  throw new Error("Function not implemented.");
+              } } {...{ control }}>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={control}
