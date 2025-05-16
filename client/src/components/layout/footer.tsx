@@ -57,7 +57,7 @@ export default function Footer() {
                 </button>
               </li>
               <li>
-                <button onClick={handleNav("auth")} className="text-left text-base text-gray-300 hover:text-white">
+              <button onClick={handleNav("register")} className="text-left text-base text-gray-300 hover:text-white">
                   Create Profile
                 </button>
               </li>
