@@ -75,11 +75,11 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container px-4 sm:px-6 mx-auto max-w-lg bg-white rounded-xl shadow-lg overflow-hidden">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold">Sign In</h2>
-          <p className="text-gray-600">Please enter your credentials to access your account.</p>
+    <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
+      <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-6">
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold">Sign In</h2>
+          <p className="text-sm text-gray-600">Please enter your credentials.</p>
         </div>
 
         <Form {...form}>
@@ -88,27 +88,31 @@ export default function LoginPage() {
               control={form.control}
               name="username"
               render={({ field }) => (
-                <FormControl>
+                <div>
                   <FormLabel>Username</FormLabel>
-                  <Input {...field} placeholder="Enter your username" />
+                  <FormControl>
+                    <Input {...field} placeholder="Enter your username" />
+                  </FormControl>
                   <FormMessage />
-                </FormControl>
+                </div>
               )}
             />
             <FormField
               control={form.control}
               name="password"
               render={({ field }) => (
-                <FormControl>
+                <div>
                   <FormLabel>Password</FormLabel>
-                  <Input type="password" {...field} placeholder="Enter your password" />
+                  <FormControl>
+                    <Input type="password" {...field} placeholder="Enter your password" />
+                  </FormControl>
                   <FormMessage />
-                </FormControl>
+                </div>
               )}
             />
             <Button
               type="submit"
-              className="w-full border-2 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white transition duration-300"
+              className="w-full border-2 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white transition"
               disabled={loading}
             >
               {loading ? (
