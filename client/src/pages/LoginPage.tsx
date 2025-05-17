@@ -1,28 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Form, FormField, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormField,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
-// Schema definition using Zod
+// Validation schema
 const loginSchema = z.object({
-  username: z.string().min(3, "Username must be at least 3 characters"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  username: z.string().min(3, "Username is required"),
+  password: z.string().min(6, "Password is required"),
 });
 
-// Inferred TypeScript type
 type LoginData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const fieldRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginData) => {
@@ -74,6 +80,24 @@ export default function LoginPage() {
     }
   };
 
+  // Scroll to first error field
+  useEffect(() => {
+    const errors = form.formState.errors;
+    const firstErrorField = Object.keys(errors)[0];
+    if (firstErrorField && fieldRefs.current[firstErrorField]) {
+      fieldRefs.current[firstErrorField]?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [form.formState.errors]);
+
+  const RequiredLabel = ({ children }: { children: string }) => (
+    <FormLabel>
+      {children} <span className="text-red-500">*</span>
+    </FormLabel>
+  );
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-6">
@@ -88,8 +112,8 @@ export default function LoginPage() {
               control={form.control}
               name="username"
               render={({ field }) => (
-                <div>
-                  <FormLabel>Username</FormLabel>
+                <div ref={(el) => (fieldRefs.current["username"] = el)}>
+                  <RequiredLabel>Username</RequiredLabel>
                   <FormControl>
                     <Input {...field} placeholder="Enter your username" />
                   </FormControl>
@@ -101,8 +125,8 @@ export default function LoginPage() {
               control={form.control}
               name="password"
               render={({ field }) => (
-                <div>
-                  <FormLabel>Password</FormLabel>
+                <div ref={(el) => (fieldRefs.current["password"] = el)}>
+                  <RequiredLabel>Password</RequiredLabel>
                   <FormControl>
                     <Input type="password" {...field} placeholder="Enter your password" />
                   </FormControl>
