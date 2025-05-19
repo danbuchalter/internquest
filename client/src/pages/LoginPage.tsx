@@ -14,7 +14,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // <-- Added Link here
 
 // Validation schema
 const loginSchema = z.object({
@@ -150,6 +150,15 @@ export default function LoginPage() {
             </Button>
           </form>
         </Form>
+
+        {/* Forgot Password Link */}
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Forgot your password?{" "}
+          <Link to="/forgot-password" className="text-blue-600 underline hover:text-blue-800">
+            Reset it here
+          </Link>
+          .
+        </p>
       </div>
     </div>
   );
