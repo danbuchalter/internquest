@@ -1,7 +1,7 @@
 // src/pages/ResetPassword.tsx
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { supabase } from "../lib/supabaseClient"; // adjust if needed
+import { supabase } from "../lib/supabaseClient"; // Make sure this path is correct
 import { useNavigate } from "react-router-dom";
 
 interface ResetPasswordForm {
@@ -27,7 +27,7 @@ export default function ResetPassword() {
 
   useEffect(() => {
     // On page load, Supabase will handle the session if the link is valid
-    supabase.auth.getSession().then(({ data }) => {
+    supabase.auth.getSession().then(({ data }: { data: { session: any } }) => {
       if (!data.session) {
         setMessage("No valid session found. Use the reset link again.");
       }

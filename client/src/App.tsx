@@ -29,6 +29,10 @@ import InternRegister from "@/pages/InternRegister";
 import CompanyRegister from "@/pages/CompanyRegister";
 import LoginPage from "@/pages/LoginPage"; // Import the LoginPage
 
+// Add imports for ForgotPassword and ResetPassword pages:
+import ForgotPassword from "@/pages/ForgotPassword";
+import ResetPassword from "@/pages/ResetPassword";
+
 function Router() {
   const location = useLocation();
   const isAuthPage = location.pathname.includes("/auth") || location.pathname.includes("/register");
@@ -48,8 +52,12 @@ function Router() {
           <Route path="/register" element={<UserTypeSelection />} />
           <Route path="/auth" element={<AuthPage />} />
           
-          {/* Add LoginPage route */}
-          <Route path="/login" element={<LoginPage />} /> {/* Added LoginPage route */}
+          {/* Existing LoginPage route */}
+          <Route path="/login" element={<LoginPage />} />
+
+          {/* NEW routes for ForgotPassword and ResetPassword */}
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           <Route path="/internships" element={<InternshipList />} />
 
@@ -66,28 +74,40 @@ function Router() {
           <Route path="/contact-us" element={<ContactUs />} />
 
           {/* Intern Routes */}
-          <Route path="/intern/dashboard" element={
-            <ProtectedRoute requiredRole="intern">
-              <StudentDashboard />
-            </ProtectedRoute>
-          } />
-          <Route path="/saved-internships" element={
-            <ProtectedRoute requiredRole="intern">
-              <SavedInternships />
-            </ProtectedRoute>
-          } />
+          <Route
+            path="/intern/dashboard"
+            element={
+              <ProtectedRoute requiredRole="intern">
+                <StudentDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/saved-internships"
+            element={
+              <ProtectedRoute requiredRole="intern">
+                <SavedInternships />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Company Routes */}
-          <Route path="/company/dashboard" element={
-            <ProtectedRoute requiredRole="company">
-              <CompanyDashboard />
-            </ProtectedRoute>
-          } />
-          <Route path="/post-internship" element={
-            <ProtectedRoute requiredRole="company">
-              <PostInternship />
-            </ProtectedRoute>
-          } />
+          <Route
+            path="/company/dashboard"
+            element={
+              <ProtectedRoute requiredRole="company">
+                <CompanyDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/post-internship"
+            element={
+              <ProtectedRoute requiredRole="company">
+                <PostInternship />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Registration Pages */}
           <Route path="/register/intern" element={<InternRegister />} />
