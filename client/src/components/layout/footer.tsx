@@ -52,18 +52,18 @@ export default function Footer() {
                 </button>
               </li>
               <li>
-                <button onClick={handleNav("internships")} className="text-left text-base text-gray-300 hover:text-white">
-                  Browse Internships
-                </button>
-              </li>
-              <li>
-              <button onClick={handleNav("register")} className="text-left text-base text-gray-300 hover:text-white">
+                <button onClick={handleNav("register")} className="text-left text-base text-gray-300 hover:text-white">
                   Create Profile
                 </button>
               </li>
               <li>
                 <button onClick={handleNav("application-tips")} className="text-left text-base text-gray-300 hover:text-white">
                   Application Tips
+                </button>
+              </li>
+              <li>
+                <button onClick={handleNav("internship-preparation")} className="text-left text-base text-gray-300 hover:text-white">
+                  Internship Preparation
                 </button>
               </li>
             </ul>
@@ -73,16 +73,6 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">For Companies</h3>
             <ul className="mt-4 space-y-4">
               <li>
-                <button onClick={handleNav("post-internship")} className="text-left text-base text-gray-300 hover:text-white">
-                  Post Internships
-                </button>
-              </li>
-              <li>
-                <button onClick={handleNav("company/dashboard")} className="text-left text-base text-gray-300 hover:text-white">
-                  Company Dashboard
-                </button>
-              </li>
-              <li>
                 <button onClick={handleNav("internship-guide")} className="text-left text-base text-gray-300 hover:text-white">
                   Internship Guide
                 </button>
@@ -90,6 +80,16 @@ export default function Footer() {
               <li>
                 <button onClick={handleNav("partner-benefits")} className="text-left text-base text-gray-300 hover:text-white">
                   Partner Benefits
+                </button>
+              </li>
+              <li>
+                <button onClick={handleNav("employer-resources")} className="text-left text-base text-gray-300 hover:text-white">
+                  Employer Resources
+                </button>
+              </li>
+              <li>
+                <button onClick={handleNav("industry-insights")} className="text-left text-base text-gray-300 hover:text-white">
+                  Industry Insights
                 </button>
               </li>
             </ul>
