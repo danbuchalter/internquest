@@ -23,6 +23,11 @@ import PartnerBenefits from "@/pages/PartnerBenefits";
 import TermsOfService from "@/pages/TermsOfService";
 import ContactUs from "@/pages/ContactUs";
 
+// ✅ New informational pages you asked for
+import InternshipPreparation from "@/pages/ InternshipPreparation";
+import EmployerResources from "@/pages/EmployerResources";
+import IndustryInsights from "@/pages/IndustryInsights";
+
 // ✅ New dashboard redirect component
 import DashboardRedirect from "@/pages/DashboardRedirect";
 import InternRegister from "@/pages/InternRegister";
@@ -72,6 +77,11 @@ function Router() {
           <Route path="/partner-benefits" element={<PartnerBenefits />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/contact-us" element={<ContactUs />} />
+
+          {/* NEW informational pages */}
+          <Route path="/internship-preparation" element={<InternshipPreparation />} />
+          <Route path="/employer-resources" element={<EmployerResources />} />
+          <Route path="/industry-insights" element={<IndustryInsights />} />
 
           {/* Intern Routes */}
           <Route
