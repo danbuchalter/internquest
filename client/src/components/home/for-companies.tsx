@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link } from "react-router-dom";  // <-- Changed from 'wouter' to 'react-router-dom'
 import { Users, Rocket, HandshakeIcon } from "lucide-react";
 
 export default function ForCompanies() {
@@ -7,7 +7,7 @@ export default function ForCompanies() {
       <div className="absolute top-0 right-0 w-1/3 h-full">
         <div className="h-full w-full bg-gradient-to-l from-primary/10 to-transparent opacity-70"></div>
       </div>
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="lg:flex lg:items-center lg:justify-between">
           <div className="lg:w-1/2">
@@ -15,7 +15,7 @@ export default function ForCompanies() {
             <p className="mt-4 text-lg text-gray-600">
               Connect with talented, eager South African students ready to contribute to your organization
             </p>
-            
+
             <div className="mt-8 space-y-6">
               <div className="flex">
                 <div className="flex-shrink-0">
@@ -30,7 +30,7 @@ export default function ForCompanies() {
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex">
                 <div className="flex-shrink-0">
                   <div className="flex items-center justify-center h-12 w-12 rounded-md bg-green-500 text-white">
@@ -44,7 +44,7 @@ export default function ForCompanies() {
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex">
                 <div className="flex-shrink-0">
                   <div className="flex items-center justify-center h-12 w-12 rounded-md bg-green-500 text-white">
@@ -59,17 +59,30 @@ export default function ForCompanies() {
                 </div>
               </div>
             </div>
-            
+
             <div className="mt-10">
-              <Link href="/post-internship" className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-500 hover:bg-green-600">
-                Post an Internship
-                <svg className="ml-2 -mr-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              <Link
+                to="/login" // <-- Use `to` instead of `href` for react-router-dom
+                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-500 hover:bg-green-600"
+              >
+                Get Started Now
+                <svg
+                  className="ml-2 -mr-1 h-5 w-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               </Link>
             </div>
           </div>
-          
+
           <div className="mt-10 lg:mt-0 lg:w-5/12">
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
               <div className="px-6 py-8">
@@ -77,7 +90,7 @@ export default function ForCompanies() {
                   <h3 className="text-xl font-bold text-gray-900">Join 300+ South African Companies</h3>
                   <p className="mt-2 text-sm text-gray-600">Companies that are investing in future talent</p>
                 </div>
-                
+
                 <div className="mt-8 grid grid-cols-3 gap-8">
                   <div className="flex items-center justify-center h-12 opacity-60">
                     <div className="text-gray-400 font-semibold">TechSA</div>
@@ -98,7 +111,7 @@ export default function ForCompanies() {
                     <div className="text-gray-400 font-semibold">RetailOne</div>
                   </div>
                 </div>
-                
+
                 <div className="mt-8 text-center">
                   <a href="#" className="text-green-500 hover:text-green-600 font-medium">
                     View all partner companies <span className="ml-1">→</span>
