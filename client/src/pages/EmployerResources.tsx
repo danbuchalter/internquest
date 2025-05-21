@@ -26,11 +26,7 @@ export default function EmployerResources() {
         </ul>
         <div className="mt-10 text-center">
           <p className="text-sm text-gray-500 italic">
-            Learn more about hosting interns on our{" "}
-            <a href="/partner-benefits" className="text-blue-600 hover:underline">
-              Partner Benefits
-            </a>{" "}
-            page.
+            Empowering interns starts with informed employers like you.
           </p>
         </div>
       </div>

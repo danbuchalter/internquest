@@ -26,7 +26,7 @@ export default function InternshipPreparation() {
         </ul>
         <div className="mt-10 text-center">
           <p className="text-sm text-gray-500 italic">
-            For more detailed guidance, check out our <a href="/application-tips" className="text-blue-600 underline">Application Tips</a> page.
+            Preparation turns opportunity into success.
           </p>
         </div>
       </div>

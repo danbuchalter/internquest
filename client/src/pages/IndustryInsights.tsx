@@ -26,11 +26,7 @@ export default function IndustryInsights() {
         </ul>
         <div className="mt-10 text-center">
           <p className="text-sm text-gray-500 italic">
-            Explore more on our{" "}
-            <a href="/" className="text-blue-600 hover:underline">
-              Home
-            </a>{" "}
-            page.
+            Knowledge today builds the workforce of tomorrow.
           </p>
         </div>
       </div>
