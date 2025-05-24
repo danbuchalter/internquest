@@ -23,7 +23,7 @@ import PartnerBenefits from "@/pages/PartnerBenefits";
 import TermsOfService from "@/pages/TermsOfService";
 import ContactUs from "@/pages/ContactUs";
 
-// ✅ New informational pages you asked for
+// ✅ New informational pages
 import InternshipPreparation from "@/pages/ InternshipPreparation";
 import EmployerResources from "@/pages/EmployerResources";
 import IndustryInsights from "@/pages/IndustryInsights";
@@ -32,15 +32,26 @@ import IndustryInsights from "@/pages/IndustryInsights";
 import DashboardRedirect from "@/pages/DashboardRedirect";
 import InternRegister from "@/pages/InternRegister";
 import CompanyRegister from "@/pages/CompanyRegister";
-import LoginPage from "@/pages/LoginPage"; // Import the LoginPage
+import LoginPage from "@/pages/LoginPage";
 
-// Add imports for ForgotPassword and ResetPassword pages:
+// Forgot and reset password pages
 import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
 
 function Router() {
   const location = useLocation();
-  const isAuthPage = location.pathname.includes("/auth") || location.pathname.includes("/register");
+
+  // Only hide navbar on exact auth-related routes
+  const hideNavbarExactPaths = [
+    "/login",
+    "/auth",
+    "/register",
+    "/register/intern",
+    "/register/company",
+    "/forgot-password",
+    "/reset-password"
+  ];
+  const isNavbarHidden = hideNavbarExactPaths.includes(location.pathname);
 
   return (
     <div className="flex flex-col min-h-screen w-full">
@@ -48,7 +59,7 @@ function Router() {
         Tailwind CSS is working!
       </div>
 
-      {!isAuthPage && <Navbar />}
+      {!isNavbarHidden && <Navbar />}
 
       <div className="flex-grow w-full">
         <Routes>
@@ -56,17 +67,11 @@ function Router() {
           <Route path="/" element={<HomePage />} />
           <Route path="/register" element={<UserTypeSelection />} />
           <Route path="/auth" element={<AuthPage />} />
-          
-          {/* Existing LoginPage route */}
           <Route path="/login" element={<LoginPage />} />
-
-          {/* NEW routes for ForgotPassword and ResetPassword */}
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
 
           <Route path="/internships" element={<InternshipList />} />
-
-          {/* Dynamic route for InternshipDetail */}
           <Route path="/internships/:id" element={<InternshipDetail id={""} />} />
 
           {/* Informational Pages */}
@@ -78,7 +83,6 @@ function Router() {
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/contact-us" element={<ContactUs />} />
 
-          {/* NEW informational pages */}
           <Route path="/internship-preparation" element={<InternshipPreparation />} />
           <Route path="/employer-resources" element={<EmployerResources />} />
           <Route path="/industry-insights" element={<IndustryInsights />} />
@@ -123,7 +127,7 @@ function Router() {
           <Route path="/register/intern" element={<InternRegister />} />
           <Route path="/register/company" element={<CompanyRegister />} />
 
-          {/* Dynamic route for ApplicationsView */}
+          {/* Applications view */}
           <Route path="/applications/:id" element={<ApplicationsView id={""} />} />
 
           {/* Dashboard redirect */}
