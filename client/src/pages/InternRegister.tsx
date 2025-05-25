@@ -37,6 +37,9 @@ const InternRegister = () => {
   const [activeTab] = useState('register');
   const firstErrorRef = useRef<HTMLInputElement | null>(null);
 
+  const [profilePicPreview, setProfilePicPreview] = useState<string | null>(null);
+  const [cvFileName, setCvFileName] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -69,6 +72,15 @@ const InternRegister = () => {
       }
     }
   }, [errors]);
+
+  // Clean up object URL when component unmounts or profilePicPreview changes
+  useEffect(() => {
+    return () => {
+      if (profilePicPreview) {
+        URL.revokeObjectURL(profilePicPreview);
+      }
+    };
+  }, [profilePicPreview]);
 
   return (
     <div className="container mx-auto p-6">
@@ -188,9 +200,17 @@ const InternRegister = () => {
                   const file = e.target.files?.[0];
                   if (file) {
                     setValue('profilePicture', file, { shouldValidate: true });
+                    setProfilePicPreview(URL.createObjectURL(file));
                   }
                 }}
               />
+              {profilePicPreview && (
+                <img
+                  src={profilePicPreview}
+                  alt="Profile Preview"
+                  className="mt-2 h-24 w-24 object-cover rounded-full border"
+                />
+              )}
               {errors.profilePicture && (
                 <p className="text-red-600 text-sm mt-1">{String(errors.profilePicture?.message)}</p>
               )}
@@ -211,9 +231,13 @@ const InternRegister = () => {
                   const file = e.target.files?.[0];
                   if (file) {
                     setValue('cvFile', file, { shouldValidate: true });
+                    setCvFileName(file.name);
                   }
                 }}
               />
+              {cvFileName && (
+                <p className="mt-2 text-sm text-gray-700">Selected file: {cvFileName}</p>
+              )}
               {errors.cvFile && (
                 <p className="text-red-600 text-sm mt-1">{String(errors.cvFile?.message)}</p>
               )}
