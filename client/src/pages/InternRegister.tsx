@@ -13,7 +13,10 @@ const internRegisterSchema = z.object({
     .regex(/^[A-Za-z\s]+$/, 'Full Name can only contain letters and spaces'),
   username: z.string().min(1, 'Username is required'),
   email: z.string().email('Invalid email').min(1, 'Email is required'),
-  phone: z.string().min(1, 'Phone Number is required'),
+  phone: z
+    .string()
+    .min(1, 'Phone Number is required')
+    .regex(/^\+?[0-9\s\-()]{7,}$/, 'Invalid phone number'),
   location: z.string().min(1, 'Location is required'),
   bio: z.string().min(1, 'Bio is required'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
