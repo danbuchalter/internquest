@@ -9,7 +9,10 @@ import { useRef } from 'react';
 
 const companySchema = z.object({
   user: z.object({
-    name: z.string().min(1, 'Required'),
+    name: z
+      .string()
+      .min(1, 'Contact Person Name is required')
+      .regex(/^[A-Za-z\s]+$/, 'Contact Person Name can only contain letters and spaces'),
     username: z.string().min(1, 'Required'),
     email: z.string().email('Invalid email'),
     password: z.string().min(6, 'Minimum 6 characters'),
@@ -21,7 +24,10 @@ const companySchema = z.object({
     path: ['confirmPassword'],
   }),
   company: z.object({
-    companyName: z.string().min(1, 'Required'),
+    companyName: z
+      .string()
+      .min(1, 'Company Name is required')
+      .regex(/^[A-Za-z\s]+$/, 'Company Name can only contain letters and spaces'),
     industry: z.string().min(1, 'Required'),
     website: z.string().url('Invalid URL'),
     description: z.string().min(1, 'Required'),
@@ -92,16 +98,25 @@ const CompanyRegister = () => {
                     placeholder="Full name of contact person"
                     {...register('user.name')}
                   />
+                  {errors.user?.name && (
+                    <p className="text-red-600 text-sm mt-1">{errors.user.name.message}</p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     {label('Username')}
                     <Input placeholder="Choose a username" {...register('user.username')} />
+                    {errors.user?.username && (
+                      <p className="text-red-600 text-sm mt-1">{errors.user.username.message}</p>
+                    )}
                   </div>
                   <div>
                     {label('Email')}
                     <Input type="email" placeholder="Company email" {...register('user.email')} />
+                    {errors.user?.email && (
+                      <p className="text-red-600 text-sm mt-1">{errors.user.email.message}</p>
+                    )}
                   </div>
                 </div>
 
@@ -109,10 +124,16 @@ const CompanyRegister = () => {
                   <div>
                     {label('Password')}
                     <Input type="password" placeholder="Password" {...register('user.password')} />
+                    {errors.user?.password && (
+                      <p className="text-red-600 text-sm mt-1">{errors.user.password.message}</p>
+                    )}
                   </div>
                   <div>
                     {label('Confirm Password')}
                     <Input type="password" placeholder="Confirm Password" {...register('user.confirmPassword')} />
+                    {errors.user?.confirmPassword && (
+                      <p className="text-red-600 text-sm mt-1">{errors.user.confirmPassword.message}</p>
+                    )}
                   </div>
                 </div>
 
@@ -120,10 +141,16 @@ const CompanyRegister = () => {
                   <div>
                     {label('Phone')}
                     <Input placeholder="Phone number" {...register('user.phone')} />
+                    {errors.user?.phone && (
+                      <p className="text-red-600 text-sm mt-1">{errors.user.phone.message}</p>
+                    )}
                   </div>
                   <div>
                     {label('Location')}
                     <Input placeholder="Company location" {...register('user.location')} />
+                    {errors.user?.location && (
+                      <p className="text-red-600 text-sm mt-1">{errors.user.location.message}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -136,22 +163,34 @@ const CompanyRegister = () => {
                 <div>
                   {label('Company Name')}
                   <Input placeholder="Company name" {...register('company.companyName')} />
+                  {errors.company?.companyName && (
+                    <p className="text-red-600 text-sm mt-1">{errors.company.companyName.message}</p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     {label('Industry')}
                     <Input placeholder="Industry" {...register('company.industry')} />
+                    {errors.company?.industry && (
+                      <p className="text-red-600 text-sm mt-1">{errors.company.industry.message}</p>
+                    )}
                   </div>
                   <div>
                     {label('Website')}
                     <Input placeholder="Website URL" {...register('company.website')} />
+                    {errors.company?.website && (
+                      <p className="text-red-600 text-sm mt-1">{errors.company.website.message}</p>
+                    )}
                   </div>
                 </div>
 
                 <div>
                   {label('Company Description')}
                   <Input placeholder="Brief description" {...register('company.description')} />
+                  {errors.company?.description && (
+                    <p className="text-red-600 text-sm mt-1">{errors.company.description.message}</p>
+                  )}
                 </div>
               </div>
             </div>
