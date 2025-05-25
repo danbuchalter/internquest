@@ -11,13 +11,16 @@ const companySchema = z.object({
   user: z.object({
     name: z
       .string()
-      .min(1, 'Contact Person Name is required')
+      .min(1, 'Required')
       .regex(/^[A-Za-z\s]+$/, 'Contact Person Name can only contain letters and spaces'),
     username: z.string().min(1, 'Required'),
     email: z.string().email('Invalid email'),
     password: z.string().min(6, 'Minimum 6 characters'),
     confirmPassword: z.string().min(6, 'Required'),
-    phone: z.string().min(1, 'Required'),
+    phone: z
+      .string()
+      .min(1, 'Phone Number is required')
+      .regex(/^\d+$/, 'Phone Number must contain only digits'),
     location: z.string().min(1, 'Required'),
   }).refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
@@ -26,7 +29,7 @@ const companySchema = z.object({
   company: z.object({
     companyName: z
       .string()
-      .min(1, 'Company Name is required')
+      .min(1, 'Required')
       .regex(/^[A-Za-z\s]+$/, 'Company Name can only contain letters and spaces'),
     industry: z.string().min(1, 'Required'),
     website: z.string().url('Invalid URL'),
