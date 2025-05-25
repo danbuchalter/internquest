@@ -7,7 +7,10 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 const internRegisterSchema = z.object({
-  name: z.string().min(1, 'Full Name is required'),
+  name: z
+    .string()
+    .min(1, 'Full Name is required')
+    .regex(/^[A-Za-z\s]+$/, 'Full Name can only contain letters and spaces'),
   username: z.string().min(1, 'Username is required'),
   email: z.string().email('Invalid email').min(1, 'Email is required'),
   phone: z.string().min(1, 'Phone Number is required'),
@@ -123,7 +126,7 @@ const InternRegister = () => {
                 <label className="block mb-1">
                   Location <span className="text-red-600">*</span>
                 </label>
-                <Input placeholder="Your location" {...register('location')} />
+                <Input placeholder="Your home address" {...register('location')} />
                 {errors.location && (
                   <p className="text-red-600 text-sm mt-1">{errors.location.message}</p>
                 )}
@@ -189,8 +192,8 @@ const InternRegister = () => {
                 }}
               />
               {errors.profilePicture && (
-  <p className="text-red-600 text-sm mt-1">{String(errors.profilePicture?.message)}</p>
-)}
+                <p className="text-red-600 text-sm mt-1">{String(errors.profilePicture?.message)}</p>
+              )}
             </div>
 
             <div className="border p-4 rounded-lg bg-green-50 border-green-200">
@@ -212,8 +215,8 @@ const InternRegister = () => {
                 }}
               />
               {errors.cvFile && (
-        <p className="text-red-600 text-sm mt-1">{String(errors.cvFile?.message)}</p>
-)}
+                <p className="text-red-600 text-sm mt-1">{String(errors.cvFile?.message)}</p>
+              )}
             </div>
 
             <Button
