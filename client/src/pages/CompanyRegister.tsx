@@ -1,62 +1,58 @@
 import { Button, Input } from '@/components/ui';
-import { Tabs, TabsContent } from '@/components/ui/Tabs';
 import { useForm } from 'react-hook-form';
+import { useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { Loader2 } from 'lucide-react';
+import { Tabs, TabsContent } from '@/components/ui/Tabs';
+import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { useRef } from 'react';
 
-const companySchema = z.object({
-  user: z.object({
-    name: z
-      .string()
-      .min(1, 'Required')
-      .regex(/^[A-Za-z\s]+$/, 'Contact Person Name can only contain letters and spaces'),
-    username: z.string().min(1, 'Required'),
-    email: z.string().email('Invalid email'),
-    password: z.string().min(6, 'Minimum 6 characters'),
-    confirmPassword: z.string().min(6, 'Required'),
-    phone: z
-      .string()
-      .min(1, 'Phone Number is required')
-      .regex(/^\d+$/, 'Phone Number must contain only digits'),
-    location: z.string().min(1, 'Required'),
-  }).refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmPassword'],
-  }),
-  company: z.object({
-    companyName: z
-      .string()
-      .min(1, 'Required')
-      .regex(/^[A-Za-z\s]+$/, 'Company Name can only contain letters and spaces'),
-    industry: z.string().min(1, 'Required'),
-    website: z.string().url('Invalid URL'),
-    description: z.string().min(1, 'Required'),
-  }),
-});
-
-type CompanyFormData = z.infer<typeof companySchema>;
-
-const CompanyRegister = () => {
-  const firstErrorRef = useRef<HTMLInputElement | null>(null);
-
-  const companyRegForm = useForm<CompanyFormData>({
-    resolver: zodResolver(companySchema),
-    mode: 'onSubmit',
+const companyRegisterSchema = z
+  .object({
+    user: z.object({
+      name: z.string().min(1, 'Contact Person Name is required'),
+      username: z.string().min(1, 'Username is required'),
+      email: z.string().email('Invalid email').min(1, 'Email is required'),
+      password: z.string().min(6, 'Password must be at least 6 characters'),
+      confirmPassword: z.string().min(1, 'Confirm Password is required'),
+      phone: z.string().min(1, 'Phone Number is required'),
+      location: z.string().min(1, 'Location is required'),
+    }),
+    company: z.object({
+      companyName: z.string().min(1, 'Company Name is required'),
+      industry: z.string().min(1, 'Industry is required'),
+      website: z.string().url('Invalid URL').optional().or(z.literal('')),
+      description: z.string().min(1, 'Description is required'),
+    }),
+  })
+  .refine((data) => data.user.password === data.user.confirmPassword, {
+    path: ['user', 'confirmPassword'],
+    message: "Passwords don't match",
   });
 
+type CompanyFormData = z.infer<typeof companyRegisterSchema>;
+
+const CompanyRegister = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = companyRegForm;
+  } = useForm<CompanyFormData>({
+    resolver: zodResolver(companyRegisterSchema),
+  });
 
   const registerCompanyMutation = useMutation({
     mutationFn: async (data: CompanyFormData) => {
-      console.log('Company Registration Data:', data);
-      // Add API logic here
+      const response = await fetch('/api/company/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Registration failed');
+      }
+      return response.json();
     },
   });
 
@@ -64,154 +60,182 @@ const CompanyRegister = () => {
     registerCompanyMutation.mutate(data);
   };
 
-  const onError = () => {
-    const firstErrorField = Object.keys(errors).find((key) => {
-      const field = errors[key as keyof typeof errors];
-      return field;
-    });
+  useEffect(() => {
+    const flattenErrors = (obj: any, prefix = ''): string[] => {
+      return Object.entries(obj).flatMap(([key, val]) => {
+        if (typeof val === 'object' && val !== null && 'message' in val) {
+          return [`${prefix}${key}`];
+        }
+        if (typeof val === 'object' && val !== null) {
+          return flattenErrors(val, `${prefix}${key}.`);
+        }
+        return [];
+      });
+    };
 
-    const errorElement = document.querySelector(
-      `[name="${firstErrorField}"]`
-    ) as HTMLElement;
-
-    if (errorElement?.scrollIntoView) {
-      errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      errorElement.focus();
+    const errorFields = flattenErrors(errors);
+    if (errorFields.length) {
+      const firstErrorField = errorFields[0];
+      const element = document.querySelector(`[name="${firstErrorField}"]`) as HTMLElement | null;
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        element.focus();
+      }
     }
-  };
-
-  const label = (text: string) => (
-    <label className="block mb-1 font-medium">
-      {text} <span className="text-red-500">*</span>
-    </label>
-  );
+  }, [errors]);
 
   return (
     <div className="container mx-auto p-6">
       <Tabs defaultValue="register">
         <TabsContent value="register">
-          <form onSubmit={handleSubmit(onCompanyRegisterSubmit, onError)} className="space-y-8">
-            {/* Account Information */}
-            <div>
-              <h3 className="text-xl font-semibold mb-4">Account Information</h3>
-              <div className="space-y-4">
+          <form onSubmit={handleSubmit(onCompanyRegisterSubmit)} noValidate className="space-y-8">
+            <h3 className="text-xl font-semibold mb-4">Company Registration</h3>
+
+            <fieldset className="border p-4 rounded-lg">
+              <legend className="font-semibold mb-4">Account Information</legend>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Contact Person Name */}
                 <div>
-                  {label('Contact Person Name')}
-                  <Input
-                    placeholder="Full name of contact person"
-                    {...register('user.name')}
-                  />
+                  <label className="block mb-1">
+                    Contact Person Name <span className="text-red-600">*</span>
+                  </label>
+                  <Input {...register('user.name')} placeholder="Contact person full name" />
                   {errors.user?.name && (
                     <p className="text-red-600 text-sm mt-1">{errors.user.name.message}</p>
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    {label('Username')}
-                    <Input placeholder="Choose a username" {...register('user.username')} />
-                    {errors.user?.username && (
-                      <p className="text-red-600 text-sm mt-1">{errors.user.username.message}</p>
-                    )}
-                  </div>
-                  <div>
-                    {label('Email')}
-                    <Input type="email" placeholder="Company email" {...register('user.email')} />
-                    {errors.user?.email && (
-                      <p className="text-red-600 text-sm mt-1">{errors.user.email.message}</p>
-                    )}
-                  </div>
+                {/* Username */}
+                <div>
+                  <label className="block mb-1">
+                    Username <span className="text-red-600">*</span>
+                  </label>
+                  <Input {...register('user.username')} placeholder="Your username" />
+                  {errors.user?.username && (
+                    <p className="text-red-600 text-sm mt-1">{errors.user.username.message}</p>
+                  )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    {label('Password')}
-                    <Input type="password" placeholder="Password" {...register('user.password')} />
-                    {errors.user?.password && (
-                      <p className="text-red-600 text-sm mt-1">{errors.user.password.message}</p>
-                    )}
-                  </div>
-                  <div>
-                    {label('Confirm Password')}
-                    <Input type="password" placeholder="Confirm Password" {...register('user.confirmPassword')} />
-                    {errors.user?.confirmPassword && (
-                      <p className="text-red-600 text-sm mt-1">{errors.user.confirmPassword.message}</p>
-                    )}
-                  </div>
+                {/* Email */}
+                <div>
+                  <label className="block mb-1">
+                    Email <span className="text-red-600">*</span>
+                  </label>
+                  <Input type="email" {...register('user.email')} placeholder="Your email" />
+                  {errors.user?.email && (
+                    <p className="text-red-600 text-sm mt-1">{errors.user.email.message}</p>
+                  )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    {label('Phone')}
-                    <Input placeholder="Phone number" {...register('user.phone')} />
-                    {errors.user?.phone && (
-                      <p className="text-red-600 text-sm mt-1">{errors.user.phone.message}</p>
-                    )}
-                  </div>
-                  <div>
-                    {label('Location')}
-                    <Input placeholder="Company location" {...register('user.location')} />
-                    {errors.user?.location && (
-                      <p className="text-red-600 text-sm mt-1">{errors.user.location.message}</p>
-                    )}
-                  </div>
+                {/* Phone */}
+                <div>
+                  <label className="block mb-1">
+                    Phone Number <span className="text-red-600">*</span>
+                  </label>
+                  <Input {...register('user.phone')} placeholder="Phone number" />
+                  {errors.user?.phone && (
+                    <p className="text-red-600 text-sm mt-1">{errors.user.phone.message}</p>
+                  )}
+                </div>
+
+                {/* Location */}
+                <div>
+                  <label className="block mb-1">
+                    Location <span className="text-red-600">*</span>
+                  </label>
+                  <Input {...register('user.location')} placeholder="Location" />
+                  {errors.user?.location && (
+                    <p className="text-red-600 text-sm mt-1">{errors.user.location.message}</p>
+                  )}
+                </div>
+
+                {/* Password */}
+                <div>
+                  <label className="block mb-1">
+                    Password <span className="text-red-600">*</span>
+                  </label>
+                  <Input type="password" {...register('user.password')} placeholder="Password" />
+                  {errors.user?.password && (
+                    <p className="text-red-600 text-sm mt-1">{errors.user.password.message}</p>
+                  )}
+                </div>
+
+                {/* Confirm Password */}
+                <div>
+                  <label className="block mb-1">
+                    Confirm Password <span className="text-red-600">*</span>
+                  </label>
+                  <Input
+                    type="password"
+                    {...register('user.confirmPassword')}
+                    placeholder="Confirm Password"
+                  />
+                  {errors.user?.confirmPassword && (
+                    <p className="text-red-600 text-sm mt-1">{errors.user.confirmPassword.message}</p>
+                  )}
                 </div>
               </div>
-            </div>
+            </fieldset>
 
-            {/* Company Info */}
-            <div>
-              <h3 className="text-xl font-semibold mb-4">Company Information</h3>
-              <div className="space-y-4">
+            <fieldset className="border p-4 rounded-lg">
+              <legend className="font-semibold mb-4">Company Information</legend>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Company Name */}
                 <div>
-                  {label('Company Name')}
-                  <Input placeholder="Company name" {...register('company.companyName')} />
+                  <label className="block mb-1">
+                    Company Name <span className="text-red-600">*</span>
+                  </label>
+                  <Input {...register('company.companyName')} placeholder="Company name" />
                   {errors.company?.companyName && (
                     <p className="text-red-600 text-sm mt-1">{errors.company.companyName.message}</p>
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    {label('Industry')}
-                    <Input placeholder="Industry" {...register('company.industry')} />
-                    {errors.company?.industry && (
-                      <p className="text-red-600 text-sm mt-1">{errors.company.industry.message}</p>
-                    )}
-                  </div>
-                  <div>
-                    {label('Website')}
-                    <Input placeholder="Website URL" {...register('company.website')} />
-                    {errors.company?.website && (
-                      <p className="text-red-600 text-sm mt-1">{errors.company.website.message}</p>
-                    )}
-                  </div>
+                {/* Industry */}
+                <div>
+                  <label className="block mb-1">
+                    Industry <span className="text-red-600">*</span>
+                  </label>
+                  <Input {...register('company.industry')} placeholder="Industry" />
+                  {errors.company?.industry && (
+                    <p className="text-red-600 text-sm mt-1">{errors.company.industry.message}</p>
+                  )}
                 </div>
 
+                {/* Website */}
                 <div>
-                  {label('Company Description')}
-                  <Input placeholder="Brief description" {...register('company.description')} />
+                  <label className="block mb-1">Website (optional)</label>
+                  <Input {...register('company.website')} placeholder="https://example.com" />
+                  {errors.company?.website && (
+                    <p className="text-red-600 text-sm mt-1">{errors.company.website.message}</p>
+                  )}
+                </div>
+
+                {/* Description */}
+                <div>
+                  <label className="block mb-1">
+                    Description <span className="text-red-600">*</span>
+                  </label>
+                  <Input {...register('company.description')} placeholder="Brief company description" />
                   {errors.company?.description && (
                     <p className="text-red-600 text-sm mt-1">{errors.company.description.message}</p>
                   )}
                 </div>
               </div>
-            </div>
+            </fieldset>
 
-            <Button
-              type="submit"
-              className="w-full mt-8 text-lg p-6 font-semibold bg-blue-600 hover:bg-blue-700 text-white border border-blue-700"
-              disabled={registerCompanyMutation.isPending}
-            >
-              {registerCompanyMutation.isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Creating account...
-                </>
-              ) : (
-                'Create Company Account'
-              )}
+            <Button type="submit" disabled={registerCompanyMutation.status === 'pending'}>
+              {registerCompanyMutation.status === 'pending' ? 'Registering...' : 'Register'}
             </Button>
+
+            {registerCompanyMutation.isError && (
+              <p className="text-red-600 mt-2">{(registerCompanyMutation.error as Error).message}</p>
+            )}
+            {registerCompanyMutation.isSuccess && (
+              <p className="text-green-600 mt-2">Registration successful! Please log in.</p>
+            )}
           </form>
         </TabsContent>
       </Tabs>

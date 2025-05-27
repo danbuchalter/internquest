@@ -6,40 +6,38 @@ import { Tabs, TabsContent } from '@/components/ui/Tabs';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-const internRegisterSchema = z.object({
-  name: z
-    .string()
-    .min(1, 'Full Name is required')
-    .regex(/^[A-Za-z\s]+$/, 'Full Name can only contain letters and spaces'),
-  username: z.string().min(1, 'Username is required'),
-  email: z.string().email('Invalid email').min(1, 'Email is required'),
-  phone: z
-    .string()
-    .min(1, 'Phone Number is required')
-    .regex(/^\+?[0-9\s\-()]{7,}$/, 'Invalid phone number'),
-  location: z.string().min(1, 'Location is required'),
-  bio: z.string().min(1, 'Bio is required'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  confirmPassword: z
-    .string()
-    .min(1, 'Confirm Password is required'),
-  profilePicture: z
-    .any()
-    .refine((file) => file instanceof File, { message: 'Profile picture is required' }),
-  cvFile: z
-    .any()
-    .refine((file) => file instanceof File, { message: 'CV / Resume is required' }),
-}).refine((data) => data.password === data.confirmPassword, {
-  path: ['confirmPassword'],
-  message: "Passwords don't match",
-});
+const internRegisterSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, 'Full Name is required')
+      .regex(/^[A-Za-z\s]+$/, 'Full Name can only contain letters and spaces'),
+    username: z.string().min(1, 'Username is required'),
+    email: z.string().email('Invalid email').min(1, 'Email is required'),
+    phone: z
+      .string()
+      .min(1, 'Phone Number is required')
+      .regex(/^\+?[0-9\s\-()]{7,}$/, 'Invalid phone number'),
+    location: z.string().min(1, 'Location is required'),
+    bio: z.string().min(1, 'Bio is required'),
+    password: z.string().min(6, 'Password must be at least 6 characters'),
+    confirmPassword: z.string().min(1, 'Confirm Password is required'),
+    profilePicture: z.any().refine((file) => file instanceof File, {
+      message: 'Profile picture is required',
+    }),
+    cvFile: z.any().refine((file) => file instanceof File, {
+      message: 'CV / Resume is required',
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ['confirmPassword'],
+    message: "Passwords don't match",
+  });
 
 type InternFormData = z.infer<typeof internRegisterSchema>;
 
 const InternRegister = () => {
   const [activeTab] = useState('register');
-  const firstErrorRef = useRef<HTMLInputElement | null>(null);
-
   const [profilePicPreview, setProfilePicPreview] = useState<string | null>(null);
   const [cvFileName, setCvFileName] = useState<string | null>(null);
 
@@ -54,9 +52,27 @@ const InternRegister = () => {
 
   const registerInternMutation = useMutation({
     mutationFn: async (data: InternFormData) => {
-      // You may want to transform files to FormData here for actual upload
-      console.log('Intern Registration Data:', data);
-      // Replace with actual API call
+      const formData = new FormData();
+      formData.append('name', data.name);
+      formData.append('username', data.username);
+      formData.append('email', data.email);
+      formData.append('phone', data.phone);
+      formData.append('location', data.location);
+      formData.append('bio', data.bio);
+      formData.append('password', data.password);
+      formData.append('profilePicture', data.profilePicture);
+      formData.append('cvFile', data.cvFile);
+
+      const response = await fetch('/api/intern/register', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Registration failed');
+      }
+      return response.json();
     },
   });
 
@@ -64,7 +80,6 @@ const InternRegister = () => {
     registerInternMutation.mutate(data);
   };
 
-  // Scroll to first error field when errors change
   useEffect(() => {
     const firstErrorKey = Object.keys(errors)[0] as keyof InternFormData | undefined;
     if (firstErrorKey) {
@@ -76,7 +91,6 @@ const InternRegister = () => {
     }
   }, [errors]);
 
-  // Clean up object URL when component unmounts or profilePicPreview changes
   useEffect(() => {
     return () => {
       if (profilePicPreview) {
@@ -89,11 +103,7 @@ const InternRegister = () => {
     <div className="container mx-auto p-6">
       <Tabs defaultValue="register" value={activeTab}>
         <TabsContent value="register">
-          <form
-            onSubmit={handleSubmit(onInternRegisterSubmit)}
-            className="space-y-8"
-            noValidate
-          >
+          <form onSubmit={handleSubmit(onInternRegisterSubmit)} className="space-y-8" noValidate>
             <h3 className="text-xl font-semibold mb-4">Intern Registration</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -102,9 +112,7 @@ const InternRegister = () => {
                   Full Name <span className="text-red-600">*</span>
                 </label>
                 <Input placeholder="Your full name" {...register('name')} />
-                {errors.name && (
-                  <p className="text-red-600 text-sm mt-1">{errors.name.message}</p>
-                )}
+                {errors.name && <p className="text-red-600 text-sm mt-1">{errors.name.message}</p>}
               </div>
 
               <div>
@@ -122,9 +130,7 @@ const InternRegister = () => {
                   Email <span className="text-red-600">*</span>
                 </label>
                 <Input type="email" placeholder="Your email address" {...register('email')} />
-                {errors.email && (
-                  <p className="text-red-600 text-sm mt-1">{errors.email.message}</p>
-                )}
+                {errors.email && <p className="text-red-600 text-sm mt-1">{errors.email.message}</p>}
               </div>
 
               <div>
@@ -132,9 +138,7 @@ const InternRegister = () => {
                   Phone Number <span className="text-red-600">*</span>
                 </label>
                 <Input type="tel" placeholder="Your phone number" {...register('phone')} />
-                {errors.phone && (
-                  <p className="text-red-600 text-sm mt-1">{errors.phone.message}</p>
-                )}
+                {errors.phone && <p className="text-red-600 text-sm mt-1">{errors.phone.message}</p>}
               </div>
 
               <div>
@@ -152,9 +156,7 @@ const InternRegister = () => {
                   Bio <span className="text-red-600">*</span>
                 </label>
                 <Input placeholder="Brief description about yourself" {...register('bio')} />
-                {errors.bio && (
-                  <p className="text-red-600 text-sm mt-1">{errors.bio.message}</p>
-                )}
+                {errors.bio && <p className="text-red-600 text-sm mt-1">{errors.bio.message}</p>}
               </div>
             </div>
 
@@ -163,11 +165,7 @@ const InternRegister = () => {
                 <label className="block mb-1">
                   Password <span className="text-red-600">*</span>
                 </label>
-                <Input
-                  type="password"
-                  placeholder="Create a password"
-                  {...register('password')}
-                />
+                <Input type="password" placeholder="Create a password" {...register('password')} />
                 {errors.password && (
                   <p className="text-red-600 text-sm mt-1">{errors.password.message}</p>
                 )}
@@ -192,9 +190,7 @@ const InternRegister = () => {
               <label className="text-xl font-bold text-blue-700 block mb-2">
                 Profile Picture <span className="text-red-600">*</span>
               </label>
-              <p className="text-base text-blue-600 mb-3">
-                Upload a clear photo of yourself
-              </p>
+              <p className="text-base text-blue-600 mb-3">Upload a clear photo of yourself</p>
               <Input
                 type="file"
                 accept="image/*"
@@ -215,7 +211,9 @@ const InternRegister = () => {
                 />
               )}
               {errors.profilePicture && (
-                <p className="text-red-600 text-sm mt-1">{String(errors.profilePicture?.message)}</p>
+                <p className="text-red-600 text-sm mt-1">
+                  {String(errors.profilePicture?.message)}
+                </p>
               )}
             </div>
 
@@ -238,28 +236,22 @@ const InternRegister = () => {
                   }
                 }}
               />
-              {cvFileName && (
-                <p className="mt-2 text-sm text-gray-700">Selected file: {cvFileName}</p>
-              )}
+              {cvFileName && <p className="mt-1 text-gray-700">Selected: {cvFileName}</p>}
               {errors.cvFile && (
                 <p className="text-red-600 text-sm mt-1">{String(errors.cvFile?.message)}</p>
               )}
             </div>
 
-            <Button
-              type="submit"
-              className="w-full mt-8 text-lg p-6 font-semibold bg-blue-600 text-white border border-blue-700 hover:bg-blue-700"
-              disabled={registerInternMutation.isPending}
-            >
-              {registerInternMutation.isPending ? (
-                <>
-                  <span className="mr-2 h-4 w-4 animate-spin border-2 border-t-transparent border-white rounded-full inline-block"></span>
-                  Creating account...
-                </>
-              ) : (
-                'Create Intern Account'
-              )}
+            <Button type="submit" disabled={registerInternMutation.status === 'pending'}>
+              {registerInternMutation.status === 'pending' ? 'Registering...' : 'Register'}
             </Button>
+
+            {registerInternMutation.status === 'error' && (
+              <p className="text-red-600 mt-2">{(registerInternMutation.error as Error).message}</p>
+            )}
+            {registerInternMutation.status === 'success' && (
+              <p className="text-green-600 mt-2">Registration successful! Please log in.</p>
+            )}
           </form>
         </TabsContent>
       </Tabs>
