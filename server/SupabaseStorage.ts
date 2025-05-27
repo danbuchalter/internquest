@@ -6,8 +6,8 @@ import {
   IStorage
 } from './types'; // correct relative path
 
-const SUPABASE_URL = 'https://dxrtrrnoigstzfpinjlk.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // Keep secret in .env ideally
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL!;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY!;
 
 export class SupabaseStorage implements IStorage {
   private client: SupabaseClient;
@@ -74,14 +74,13 @@ export class SupabaseStorage implements IStorage {
   }
 
   async getAllInternships(page: number = 1, pageSize: number = 20): Promise<Internship[]> {
-    const { data, error, count } = await this.client
+    const { data, error } = await this.client
       .from('internships')
-      .select('*', { count: 'exact' }) // This will also give you the total count
+      .select('*', { count: 'exact' })
       .eq('isActive', true)
       .range((page - 1) * pageSize, page * pageSize - 1);
-    
+
     if (error) throw error;
-  
     return data || [];
   }
 
