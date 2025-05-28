@@ -1,6 +1,6 @@
 import { Button, Input } from '@/components/ui';
 import { useForm } from 'react-hook-form';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Tabs, TabsContent } from '@/components/ui/Tabs';
 import { z } from 'zod';
@@ -22,12 +22,28 @@ const internRegisterSchema = z
     bio: z.string().min(1, 'Bio is required'),
     password: z.string().min(6, 'Password must be at least 6 characters'),
     confirmPassword: z.string().min(1, 'Confirm Password is required'),
-    profilePicture: z.any().refine((file) => file instanceof File, {
-      message: 'Profile picture is required',
-    }),
-    cvFile: z.any().refine((file) => file instanceof File, {
-      message: 'CV / Resume is required',
-    }),
+    profilePicture: z
+      .any()
+      .refine(
+        (file) =>
+          file instanceof File &&
+          file.size > 0 &&
+          ['image/jpeg', 'image/png', 'image/webp'].includes(file.type),
+        {
+          message: 'Profile picture must be an image (jpg, png, webp)',
+        }
+      ),
+    cvFile: z
+      .any()
+      .refine(
+        (file) =>
+          file instanceof File &&
+          file.size > 0 &&
+          ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.type),
+        {
+          message: 'CV must be a PDF, DOC, or DOCX file',
+        }
+      ),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ['confirmPassword'],
