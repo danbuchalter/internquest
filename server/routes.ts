@@ -5,7 +5,7 @@ import { z } from "zod";
 import { JWTPayload } from "jose";
 import { jwtVerify } from "jose";
 
-import { supabaseStorage } from "./storage";
+import { SupabaseStorage } from "./SupabaseStorage";
 import { setupAuth } from "./auth";
 
 // Zod schemas
@@ -102,7 +102,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/register/intern", async (req, res) => {
     try {
       const validatedData = registerInternSchema.parse(req.body);
-      const intern = await supabaseStorage.createIntern(validatedData);
+      const intern = await SupabaseStorage.createIntern(validatedData);
       res.status(201).json({ message: "Intern registered successfully", intern });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -115,7 +115,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/register/company", async (req, res) => {
     try {
       const validatedData = registerCompanySchema.parse(req.body);
-      const company = await supabaseStorage.createCompany(validatedData);
+      const company = await SupabaseStorage.createCompany(validatedData);
       res.status(201).json({ message: "Company registered successfully", company });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -129,7 +129,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/companies/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      const company = await supabaseStorage.getCompany(id);
+      const company = await SupabaseStorage.getCompany(id);
       if (!company) return res.status(404).json({ message: "Company not found" });
       res.json(company);
     } catch (error) {
@@ -140,7 +140,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/companies/user/:userId", async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
-      const company = await supabaseStorage.getCompanyByUserId(userId);
+      const company = await SupabaseStorage.getCompanyByUserId(userId);
       if (!company) return res.status(404).json({ message: "Company not found" });
       res.json(company);
     } catch (error) {
@@ -155,7 +155,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const page = parseInt(req.query.page as string) || 1;
       const pageSize = parseInt(req.query.pageSize as string) || 10;
 
-      let internships = await supabaseStorage.getAllInternships(page, pageSize);
+      let internships = await SupabaseStorage.getAllInternships(page, pageSize);
 
       if (industry && typeof industry === "string") {
         internships = internships.filter(i => i.industry.toLowerCase() === industry.toLowerCase());
@@ -176,7 +176,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/internships/:id", async (req, res) => {
     try {
       const internshipId = parseInt(req.params.id);
-      const internship = await supabaseStorage.getInternshipById(internshipId);
+      const internship = await SupabaseStorage.getInternshipById(internshipId);
       if (!internship) return res.status(404).json({ message: "Internship not found" });
       res.json(internship);
     } catch (error) {
