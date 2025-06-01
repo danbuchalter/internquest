@@ -1,13 +1,21 @@
 // SupabaseStorage.ts
+import dotenv from 'dotenv';
+dotenv.config(); // 👈 ensures this file loads env vars if imported early
+
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import {
   User, Company, Internship, Application, SavedInternship,
   InsertUser, InsertCompany, InsertInternship, InsertApplication,
   IStorage
-} from './types'; // correct relative path
+} from './types';
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL!;
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY!;
+// Load from .env (make sure your backend entry point has `import 'dotenv/config';`)
+const SUPABASE_URL = process.env.SUPABASE_URL!;
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY!;
+
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  throw new Error("Missing Supabase environment variables");
+}
 
 export class SupabaseStorage implements IStorage {
   private client: SupabaseClient;
@@ -16,7 +24,7 @@ export class SupabaseStorage implements IStorage {
     this.client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   }
 
-  // USER
+  // USER (INTERN)
   async getUser(id: number): Promise<User | undefined> {
     const { data } = await this.client.from('users').select('*').eq('id', id).single();
     return data || undefined;
@@ -46,6 +54,16 @@ export class SupabaseStorage implements IStorage {
   }
 
   // COMPANY
+  async getCompany(id: number): Promise<Company | undefined> {
+    const { data } = await this.client.from('companies').select('*').eq('id', id).single();
+    return data || undefined;
+  }
+
+  async getCompanyByUserId(userId: number): Promise<Company | undefined> {
+    const { data } = await this.client.from('companies').select('*').eq('userId', userId).single();
+    return data || undefined;
+  }
+
   async createCompany(company: InsertCompany): Promise<Company> {
     const insertData = {
       ...company,
@@ -55,16 +73,6 @@ export class SupabaseStorage implements IStorage {
     const { data, error } = await this.client.from('companies').insert(insertData).select().single();
     if (error) throw error;
     return data;
-  }
-
-  async getCompany(id: number): Promise<Company | undefined> {
-    const { data } = await this.client.from('companies').select('*').eq('id', id).single();
-    return data || undefined;
-  }
-
-  async getCompanyByUserId(userId: number): Promise<Company | undefined> {
-    const { data } = await this.client.from('companies').select('*').eq('userId', userId).single();
-    return data || undefined;
   }
 
   // INTERNSHIP
