@@ -4,8 +4,14 @@ import { z } from "zod";
 import { JWTPayload } from "jose";
 import { jwtVerify } from "jose";
 
-import { supabaseStorage } from "./SupabaseStorage"; // Import instance, make sure you export instance in SupabaseStorage.ts
+import { SupabaseStorage } from "./SupabaseStorage"; // <-- import the class
 import { setupAuth } from "./auth";
+
+const supabaseStorage = new SupabaseStorage(); // <-- create instance
+
+// Helper transform to convert null to undefined
+const nullToUndefined = <T extends z.ZodTypeAny>(schema: T) =>
+  schema.transform((val) => (val === null ? undefined : val));
 
 // Zod schemas
 const insertInternshipSchema = z.object({
@@ -15,13 +21,15 @@ const insertInternshipSchema = z.object({
   duration: z.string(),
   location: z.string(),
   description: z.string().optional(),
-  startDate: z.string().nullable().optional(),
-  endDate: z.string().nullable().optional(),
+
+  startDate: nullToUndefined(z.string().optional().nullable()),
+  endDate: nullToUndefined(z.string().optional().nullable()),
+
   stipend: z.string().optional(),
   requirements: z.string().optional(),
   responsibilities: z.string().optional(),
   skills: z.string().optional(),
-  isActive: z.boolean().optional(),
+  isActive: z.boolean().default(true), // ✅ FIXED HERE
 });
 
 const registerInternSchema = z.object({
@@ -34,12 +42,14 @@ const registerInternSchema = z.object({
 });
 
 const registerCompanySchema = z.object({
-  companyName: z.string().min(3),
+  name: z.string().min(3),
   username: z.string().min(3),
   email: z.string().email(),
   password: z.string().min(6),
   contactPerson: z.string().min(3),
   industry: z.string().min(3),
+  location: z.string().min(2),
+  userId: z.number(),
 });
 
 // Type for authenticated requests
@@ -75,7 +85,6 @@ async function verifyToken(
       new TextEncoder().encode(SUPABASE_JWT_SECRET)
     );
 
-    // Validate and assign username, email, role safely from payload
     const username =
       typeof payload.username === "string" ? payload.username : "";
     const email = typeof payload.email === "string" ? payload.email : "";
@@ -95,15 +104,12 @@ async function verifyToken(
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Health check
   app.get("/api/health", (req, res) => {
     res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
   });
 
-  // Setup Passport.js strategies BEFORE login routes
   setupAuth(app);
 
-  // Auth: Passport.js login route
   app.post("/api/login", (req, res, next) => {
     const passport = require("passport");
     passport.authenticate("local", (err: any, user: any, info: any) => {
@@ -117,7 +123,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     })(req, res, next);
   });
 
-  // Registration routes
   app.post("/api/register/intern", async (req, res) => {
     try {
       const validatedData = registerInternSchema.parse(req.body);
@@ -131,9 +136,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/register/company", async (req, res) => {
+  app.post("/api/register/company", verifyToken, async (req: AuthRequest, res) => {
     try {
-      const validatedData = registerCompanySchema.parse(req.body);
+      let validatedData = registerCompanySchema.parse(req.body);
+      if (!validatedData.userId && req.user) {
+        validatedData = { ...validatedData, userId: req.user.id };
+      }
       const company = await supabaseStorage.createCompany(validatedData);
       res.status(201).json({ message: "Company registered successfully", company });
     } catch (error) {
@@ -144,7 +152,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Companies
   app.get("/api/companies/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
@@ -167,7 +174,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Internships
   app.get("/api/internships", async (req, res) => {
     try {
       const { industry, location, duration } = req.query;
@@ -202,7 +208,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/internships/:id", async (req, res) => {
     try {
       const internshipId = parseInt(req.params.id);
-      const internship = await supabaseStorage.getInternshipById(internshipId);
+      const internship = await supabaseStorage.getInternship(internshipId);
       if (!internship) return res.status(404).json({ message: "Internship not found" });
       res.json(internship);
     } catch (error) {
@@ -220,19 +226,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/internships", verifyToken, async (req: AuthRequest, res) => {
+  app.post("/api/internships", verifyToken, async (req, res) => {
     try {
-      if (!req.user || req.user.role !== "company") {
-        return res.status(403).json({ message: "Only companies can create internships" });
-      }
-
-      if (req.body.isActive === null) {
-        req.body.isActive = undefined;
-      }
+      if (req.body.startDate === null) req.body.startDate = undefined;
+      if (req.body.endDate === null) req.body.endDate = undefined;
 
       const validatedData = insertInternshipSchema.parse(req.body);
       const internship = await supabaseStorage.createInternship(validatedData);
-      res.status(201).json(internship);
+      res.status(201).json({ message: "Internship created successfully", internship });
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: "Invalid input", errors: error.errors });
@@ -241,7 +242,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Start the server
-  const server = createServer(app);
-  return server;
+  app.get("/api/logout", (req, res, next) => {
+    req.logout((err) => {
+      if (err) return next(err);
+      res.json({ message: "Logged out" });
+    });
+  });
+
+  return createServer(app);
 }

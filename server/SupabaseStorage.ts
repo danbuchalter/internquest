@@ -18,6 +18,9 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
 }
 
 export class SupabaseStorage implements IStorage {
+  createIntern(validatedData: { location: string; fullName: string; username: string; email: string; password: string; phone: string; }) {
+    throw new Error("Method not implemented.");
+  }
   private client: SupabaseClient;
 
   constructor() {
@@ -67,6 +70,7 @@ export class SupabaseStorage implements IStorage {
   async createCompany(company: InsertCompany): Promise<Company> {
     const insertData = {
       ...company,
+      name: company.name,           // Ensure name is used, not companyName
       website: company.website ?? null,
       description: company.description ?? null
     };
@@ -112,6 +116,38 @@ export class SupabaseStorage implements IStorage {
     const { data, error } = await this.client.from('internships').insert(insertData).select().single();
     if (error) throw error;
     return data;
+  }
+
+  async updateInternship(id: number, internship: Partial<InsertInternship>): Promise<Internship | undefined> {
+    const updateData = {
+      ...internship,
+      startDate: internship.startDate ?? null,
+      endDate: internship.endDate ?? null,
+      stipend: internship.stipend ?? null,
+      requirements: internship.requirements ?? null,
+      responsibilities: internship.responsibilities ?? null,
+      skills: internship.skills ?? null,
+      isActive: internship.isActive ?? true
+    };
+    const { data, error } = await this.client
+      .from('internships')
+      .update(updateData)
+      .eq('id', id)
+      .select()
+      .single();
+    if (error) throw error;
+    return data || undefined;
+  }
+
+  async deleteInternship(id: number): Promise<boolean> {
+    const { error, count } = await this.client
+      .from('internships')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+
+    return (count ?? 0) > 0;
   }
 
   // APPLICATION
