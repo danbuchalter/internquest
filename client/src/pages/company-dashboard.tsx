@@ -1,268 +1,213 @@
-import { useQuery } from "@tanstack/react-query";
-import { Link } from "wouter";
-import { useAuth } from "@/hooks/use-auth";
-import { Loader2, BriefcaseBusiness, Users, Clock, ThumbsUp, ThumbsDown, PlusCircle } from "lucide-react";
-import { Internship, Application, Company } from "@shared/schema";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import React, { useRef } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useNavigate } from "react-router-dom";
 
-export default function CompanyDashboard() {
-  const { user } = useAuth();
+const schema = z.object({
+  contactPersonName: z.string().min(1, "Contact person name is required"),
+  username: z.string().min(1, "Username is required"),
+  email: z.string().email("Invalid email").min(1, "Email is required"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  confirmPassword: z.string().min(1, "Please confirm your password"),
+  phoneNumber: z.string().min(1, "Phone number is required"),
+  companyName: z.string().min(1, "Company name is required"),
+  companyAddress: z.string().min(1, "Company address is required"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
 
-  const { data: company, isLoading: companyLoading } = useQuery<Company>({
-    queryKey: [`/api/companies/user/${user?.id}`],
-    enabled: !!user?.id,
+type FormData = z.infer<typeof schema>;
+
+export const CompanyRegister: React.FC = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    mode: "onTouched",
   });
 
-  const { data: internships, isLoading: internshipsLoading } = useQuery<Internship[]>({
-    queryKey: [`/api/internships/company/${company?.id}`],
-    enabled: !!company?.id,
-  });
+  const navigate = useNavigate();
+  const formRef = useRef<HTMLFormElement>(null);
 
-  const internshipIds = internships?.map(internship => internship.id) || [];
-  
-  // Only create application queries if internships are loaded
-  const applicationResults = internshipIds.length > 0 ? internshipIds.map(id => 
-    useQuery<Application[]>({
-      queryKey: [`/api/applications/internship/${id}`],
-      enabled: !!id,
-    })
-  ) : [];
+  const onSubmit = async (data: FormData) => {
+    try {
+      const payload = {
+        contactPersonName: data.contactPersonName,
+        username: data.username,
+        email: data.email,
+        password: data.password,
+        phoneNumber: data.phoneNumber,
+        companyName: data.companyName,
+        companyAddress: data.companyAddress,
+      };
 
-  // Combine all applications
-  const allApplications = applicationResults.reduce((acc, result) => {
-    if (result.data) {
-      return [...acc, ...result.data];
+      const response = await fetch("/api/company/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        if (errorData.field && errorData.message) {
+          setError(errorData.field as keyof FormData, {
+            type: "server",
+            message: errorData.message,
+          });
+        } else {
+          alert("Registration failed. Please try again.");
+        }
+        return;
+      }
+
+      // Redirect to company-dashboard after successful registration
+      navigate("/company-dashboard");
+    } catch (err) {
+      console.error("Registration error:", err);
+      alert("An unexpected error occurred.");
     }
-    return acc;
-  }, [] as Application[]);
+  };
 
-  const isLoading = companyLoading || internshipsLoading || applicationResults.some(result => result.isLoading);
+  const scrollToError = () => {
+    if (!formRef.current) return;
+    const firstErrorField = formRef.current.querySelector(
+      "[aria-invalid='true']"
+    );
+    if (firstErrorField) {
+      (firstErrorField as HTMLElement).scrollIntoView({ behavior: "smooth" });
+      (firstErrorField as HTMLElement).focus();
+    }
+  };
 
   return (
-    <div className="container mx-auto py-12 px-4">
-      <div className="flex flex-col md:flex-row items-start justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold">Company Dashboard</h1>
-          <p className="text-gray-600">
-            Welcome, {company?.companyName || user?.name}! Manage your internship listings and applications.
-          </p>
-        </div>
-        <div className="mt-4 md:mt-0">
-          <Link href="/post-internship">
-            <Button className="flex items-center">
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Post New Internship
-            </Button>
-          </Link>
-        </div>
-      </div>
+    <form
+      ref={formRef}
+      onSubmit={handleSubmit(onSubmit, () => scrollToError())}
+      noValidate
+      style={{ maxWidth: 400, margin: "auto" }}
+    >
+      <h2>Company Registration</h2>
 
-      {isLoading ? (
-        <div className="flex justify-center items-center py-20">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Stats Overview */}
-          <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-center">
-                  <div className="p-2 bg-primary/10 rounded-full mr-4">
-                    <BriefcaseBusiness className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Active Internships</p>
-                    <h3 className="text-2xl font-bold">{internships?.length || 0}</h3>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-center">
-                  <div className="p-2 bg-blue-100 rounded-full mr-4">
-                    <Users className="h-6 w-6 text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Total Applicants</p>
-                    <h3 className="text-2xl font-bold">{allApplications?.length || 0}</h3>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-center">
-                  <div className="p-2 bg-amber-100 rounded-full mr-4">
-                    <Clock className="h-6 w-6 text-amber-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Pending Applications</p>
-                    <h3 className="text-2xl font-bold">
-                      {allApplications?.filter(app => app.status === "pending").length || 0}
-                    </h3>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-center">
-                  <div className="p-2 bg-green-100 rounded-full mr-4">
-                    <ThumbsUp className="h-6 w-6 text-green-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Accepted Applicants</p>
-                    <h3 className="text-2xl font-bold">
-                      {allApplications?.filter(app => app.status === "accepted").length || 0}
-                    </h3>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Internship Listings */}
-          <div className="lg:col-span-2 space-y-4">
-            <Card className="h-full">
-              <CardHeader>
-                <CardTitle>Your Internship Listings</CardTitle>
-                <CardDescription>Manage your active internship opportunities</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {internships && internships.length > 0 ? (
-                  <div className="space-y-4">
-                    {internships.map(internship => (
-                      <div key={internship.id} className="border rounded-lg p-4">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h3 className="font-semibold">{internship.title}</h3>
-                            <p className="text-sm text-gray-600">
-                              {internship.location} · {internship.duration}
-                            </p>
-                          </div>
-                          <Badge
-                            variant={internship.isActive ? "technology" : "outline"}
-                          >
-                            {internship.isActive ? "Active" : "Inactive"}
-                          </Badge>
-                        </div>
-                        <div className="mt-4 flex flex-wrap gap-2">
-                          <Badge variant={
-                            internship.industry === "Technology" ? "technology" :
-                            internship.industry === "Marketing" ? "marketing" :
-                            internship.industry === "Finance" ? "finance" :
-                            internship.industry === "Healthcare" ? "healthcare" :
-                            internship.industry === "Education" ? "education" :
-                            "secondary"
-                          }>
-                            {internship.industry}
-                          </Badge>
-                          <Badge variant="skill">
-                            {applicationResults.find(result => 
-                              result.data?.some(app => app.internshipId === internship.id)
-                            )?.data?.length || 0} Applicants
-                          </Badge>
-                        </div>
-                        <div className="mt-4 flex justify-end space-x-2">
-                          <Link href={`/applications/${internship.id}`}>
-                            <Button variant="outline" size="sm">
-                              View Applications
-                            </Button>
-                          </Link>
-                          <Link href={`/internships/${internship.id}`}>
-                            <Button size="sm">
-                              View Details
-                            </Button>
-                          </Link>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-12">
-                    <BriefcaseBusiness className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium">No internships posted yet</h3>
-                    <p className="text-gray-500 mb-4">
-                      Start attracting applicants by posting your first internship.
-                    </p>
-                    <Link href="/post-internship">
-                      <Button>Post Internship</Button>
-                    </Link>
-                  </div>
-                )}
-              </CardContent>
-              {internships && internships.length > 0 && (
-                <CardFooter>
-                  <Link href="/post-internship">
-                    <Button variant="outline" className="w-full">
-                      Post New Internship
-                    </Button>
-                  </Link>
-                </CardFooter>
-              )}
-            </Card>
-          </div>
-
-          {/* Applications Overview */}
-          <div className="space-y-4">
-            <Card className="h-full">
-              <CardHeader>
-                <CardTitle>Recent Applications</CardTitle>
-                <CardDescription>Latest internship applications</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {allApplications && allApplications.length > 0 ? (
-                  <Tabs defaultValue="pending">
-                    <TabsList className="grid w-full grid-cols-3">
-                      <TabsTrigger value="pending">
-                        Pending
-                        <Badge className="ml-2" variant="outline">
-                          {allApplications.filter(app => app.status === "pending").length}
-                        </Badge>
-                      </TabsTrigger>
-                      <TabsTrigger value="accepted">
-                        Accepted
-                        <Badge className="ml-2" variant="outline">
-                          {allApplications.filter(app => app.status === "accepted").length}
-                        </Badge>
-                      </TabsTrigger>
-                      <TabsTrigger value="rejected">
-                        Rejected
-                        <Badge className="ml-2" variant="outline">
-                          {allApplications.filter(app => app.status === "rejected").length}
-                        </Badge>
-                      </TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="pending">
-                      {/* Display Pending Applications */}
-                    </TabsContent>
-                    <TabsContent value="accepted">
-                      {/* Display Accepted Applications */}
-                    </TabsContent>
-                    <TabsContent value="rejected">
-                      {/* Display Rejected Applications */}
-                    </TabsContent>
-                  </Tabs>
-                ) : (
-                  <div className="text-center py-12">
-                    <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium">No applications yet</h3>
-                    <p className="text-gray-500">Start accepting applicants to see their progress here.</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+      <label>
+        Contact Person Name <span style={{ color: "red" }}>*</span>
+        <input
+          type="text"
+          {...register("contactPersonName")}
+          aria-invalid={!!errors.contactPersonName}
+        />
+      </label>
+      {errors.contactPersonName && (
+        <p role="alert" style={{ color: "red" }}>
+          {errors.contactPersonName.message}
+        </p>
       )}
-    </div>
+
+      <label>
+        Username <span style={{ color: "red" }}>*</span>
+        <input
+          type="text"
+          {...register("username")}
+          aria-invalid={!!errors.username}
+        />
+      </label>
+      {errors.username && (
+        <p role="alert" style={{ color: "red" }}>
+          {errors.username.message}
+        </p>
+      )}
+
+      <label>
+        Email <span style={{ color: "red" }}>*</span>
+        <input
+          type="email"
+          {...register("email")}
+          aria-invalid={!!errors.email}
+        />
+      </label>
+      {errors.email && (
+        <p role="alert" style={{ color: "red" }}>
+          {errors.email.message}
+        </p>
+      )}
+
+      <label>
+        Password <span style={{ color: "red" }}>*</span>
+        <input
+          type="password"
+          {...register("password")}
+          aria-invalid={!!errors.password}
+        />
+      </label>
+      {errors.password && (
+        <p role="alert" style={{ color: "red" }}>
+          {errors.password.message}
+        </p>
+      )}
+
+      <label>
+        Confirm Password <span style={{ color: "red" }}>*</span>
+        <input
+          type="password"
+          {...register("confirmPassword")}
+          aria-invalid={!!errors.confirmPassword}
+        />
+      </label>
+      {errors.confirmPassword && (
+        <p role="alert" style={{ color: "red" }}>
+          {errors.confirmPassword.message}
+        </p>
+      )}
+
+      <label>
+        Phone Number <span style={{ color: "red" }}>*</span>
+        <input
+          type="tel"
+          {...register("phoneNumber")}
+          aria-invalid={!!errors.phoneNumber}
+        />
+      </label>
+      {errors.phoneNumber && (
+        <p role="alert" style={{ color: "red" }}>
+          {errors.phoneNumber.message}
+        </p>
+      )}
+
+      <label>
+        Company Name <span style={{ color: "red" }}>*</span>
+        <input
+          type="text"
+          {...register("companyName")}
+          aria-invalid={!!errors.companyName}
+        />
+      </label>
+      {errors.companyName && (
+        <p role="alert" style={{ color: "red" }}>
+          {errors.companyName.message}
+        </p>
+      )}
+
+      <label>
+        Company Address <span style={{ color: "red" }}>*</span>
+        <input
+          type="text"
+          {...register("companyAddress")}
+          aria-invalid={!!errors.companyAddress}
+        />
+      </label>
+      {errors.companyAddress && (
+        <p role="alert" style={{ color: "red" }}>
+          {errors.companyAddress.message}
+        </p>
+      )}
+
+      <button type="submit" style={{ marginTop: 20 }}>
+        Register
+      </button>
+    </form>
   );
-}
+};
